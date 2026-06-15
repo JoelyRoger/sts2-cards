@@ -1,12 +1,12 @@
 # STS2 Card Browser
 
-A fast, sortable, filterable browser for **Slay the Spire 2** cards. Covers **Silent** (91 cards) and **Regent** (88 cards) with a character switcher; more characters planned.
+A fast, sortable, filterable browser for **Slay the Spire 2** cards. Covers **Silent** (91), **Regent** (88), and **Ironclad** (90) — 269 cards — with a character switcher; more characters planned.
 
 **Live site:** https://joelyroger.github.io/sts2-cards/
 
 ## Features
 
-- **Character switcher** (Silent ⇄ Regent) — each character has its own mechanic categories
+- **Character switcher** (Silent / Regent / Ironclad) — each character has its own mechanic categories
 - Responsive card-art grid (adjustable columns)
 - Search by name
 - Sort by name, cost, rarity, or type (ascending/descending)
