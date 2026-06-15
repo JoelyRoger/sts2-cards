@@ -1,0 +1,1390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slay the Spire 2 — Silent Cards</title>
+<meta name="description" content="Browse all 91 Slay the Spire 2 Silent cards. Sort and filter by cost, rarity, and type.">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Slay the Spire 2 — Silent Cards">
+<meta property="og:description" content="All 91 Silent cards — sort & filter by cost, rarity, and type.">
+<meta property="og:image" content="https://img-preview.untapped.gg/sts2/en/cards/the-hunt.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Slay the Spire 2 — Silent Cards">
+<meta name="twitter:description" content="All 91 Silent cards — sort & filter by cost, rarity, and type.">
+<meta name="twitter:image" content="https://img-preview.untapped.gg/sts2/en/cards/the-hunt.png">
+<style>
+  :root{
+    --bg:#0a171e; --panel:#10242e; --panel2:#16323f; --line:#23404d;
+    --text:#e9f2f3; --muted:#8fb0b9; --gold:#e8b54a; --gold2:#ffd884;
+    --cols:6; --mech:#5bd6c0; --mech-bg:#11313b; --upg:#5fcf6a;
+    --r-Basic:#b9c4c8; --r-Common:#e6edee; --r-Uncommon:#4aa3ff;
+    --r-Rare:#ffd14a; --r-Event:#b07cff; --r-Ancient:#46d6b8;
+    --t-Attack:#ef6a5e; --t-Skill:#56b4ec; --t-Power:#e6a32f;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:
+      radial-gradient(1200px 600px at 50% -10%, #173040 0%, transparent 60%),
+      var(--bg);
+    color:var(--text);
+    font-family:"Segoe UI",system-ui,Roboto,Helvetica,Arial,sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  header.top{padding:26px 24px 10px;text-align:center}
+  header.top h1{
+    margin:0;font-size:clamp(20px,3vw,30px);font-weight:800;letter-spacing:.5px;
+    color:var(--gold2);text-shadow:0 2px 10px rgba(0,0,0,.5);
+  }
+  header.top p{margin:6px 0 0;color:var(--muted);font-size:13px}
+  header.top a.src{color:var(--muted);text-decoration:none;border-bottom:1px dotted var(--muted)}
+
+  .toolbar{
+    position:sticky;top:0;z-index:20;
+    background:rgba(10,23,30,.92);backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+    padding:12px 16px;margin-top:8px;
+  }
+  .toolbar .wrap{max-width:1500px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+  .row{display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center}
+  .group{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .group > .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);font-weight:700}
+
+  input[type=search],select{
+    background:var(--panel2);color:var(--text);border:1px solid var(--line);
+    border-radius:8px;padding:8px 10px;font-size:14px;outline:none;
+  }
+  input[type=search]{min-width:200px}
+  input[type=search]:focus,select:focus{border-color:var(--gold)}
+  select{cursor:pointer}
+
+  .chip{
+    border:1px solid var(--line);background:var(--panel);color:var(--muted);
+    padding:5px 11px;border-radius:999px;font-size:12.5px;font-weight:600;
+    cursor:pointer;user-select:none;transition:.12s;line-height:1;
+  }
+  .chip:hover{border-color:var(--muted);color:var(--text)}
+  .chip.on{background:var(--gold);border-color:var(--gold);color:#23180a}
+  .chip.on.rar{color:#0a171e}
+  .btn{
+    border:1px solid var(--line);background:var(--panel2);color:var(--text);
+    padding:8px 12px;border-radius:8px;font-size:13px;font-weight:600;cursor:pointer;
+  }
+  .btn:hover{border-color:var(--gold);color:var(--gold2)}
+  .dir{min-width:42px;text-align:center}
+  .count{margin-left:auto;color:var(--muted);font-size:13px;white-space:nowrap}
+
+  main{max-width:1500px;margin:18px auto 60px;padding:0 16px}
+  .grid{
+    display:grid;grid-template-columns:repeat(var(--cols),1fr);gap:16px;
+  }
+  .card{
+    background:transparent;border:none;padding:0;cursor:pointer;
+    display:flex;flex-direction:column;gap:7px;color:inherit;text-decoration:none;
+    transition:transform .12s ease;
+  }
+  .card:hover{transform:translateY(-5px)}
+  .card .imgwrap{
+    position:relative;border-radius:10px;overflow:hidden;
+    box-shadow:0 4px 14px rgba(0,0,0,.45);
+    aspect-ratio:512/654;background:var(--panel);
+  }
+  .card img{width:100%;height:100%;display:block;object-fit:contain}
+  .card:hover .imgwrap{box-shadow:0 10px 26px rgba(0,0,0,.6),0 0 0 1px var(--gold)}
+  .meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;padding:0 2px}
+  .name{font-size:12.5px;font-weight:700;text-align:center;width:100%;line-height:1.2}
+  .badges{display:flex;gap:5px;flex-wrap:wrap;justify-content:center}
+  .b{font-size:10px;font-weight:800;letter-spacing:.4px;padding:2px 7px;border-radius:999px;text-transform:uppercase;white-space:nowrap}
+  .b.cost{background:var(--panel2);color:var(--gold2);border:1px solid var(--line)}
+  .b.type{color:#0a171e}
+  .b.rar{color:#0a171e}
+  .empty{text-align:center;color:var(--muted);padding:60px 0;font-size:15px}
+
+  footer{text-align:center;color:var(--muted);font-size:12px;padding:0 16px 40px}
+  @media(max-width:1100px){:root{--cols:5}}
+  @media(max-width:860px){:root{--cols:4}}
+  @media(max-width:620px){:root{--cols:3}.count{margin-left:0}}
+  @media(max-width:420px){:root{--cols:2}}
+  .mechrow{align-items:flex-start}
+  .mechchips{display:flex;gap:6px;flex-wrap:wrap;flex:1;min-width:220px}
+  .chip .ct{opacity:.55;font-size:10px;font-weight:800;margin-left:2px}
+  .chip.mech.on{background:var(--mech);border-color:var(--mech);color:#06121a}
+  .chip.mech.on .ct{color:#06121a;opacity:.75}
+  .btn.mode{background:var(--mech-bg);border-color:var(--mech);color:var(--mech);font-weight:700}
+  .btn.mode:hover{color:#fff}
+  .btn.upg.on{background:#1b3a21;border-color:var(--upg);color:var(--upg)}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>Slay the Spire 2 — Silent Cards</h1>
+  <p><span id="subcount">91</span> cards · sort &amp; filter by cost, rarity, and type · data &amp; art from
+    <a class="src" href="https://sts2.untapped.gg/en/tier-list/cards/silent" target="_blank" rel="noopener">untapped.gg</a></p>
+</header>
+
+<div class="toolbar">
+  <div class="wrap">
+    <div class="row">
+      <input type="search" id="search" placeholder="Search by name…" autocomplete="off">
+      <div class="group">
+        <span class="lbl">Sort</span>
+        <select id="sort">
+          <option value="name">Name</option>
+          <option value="cost">Cost</option>
+          <option value="rarity">Rarity</option>
+          <option value="type">Type</option>
+        </select>
+        <button class="btn dir" id="dir" title="Toggle ascending / descending">↑</button>
+      </div>
+      <div class="group">
+        <span class="lbl">Columns</span>
+        <select id="cols">
+          <option>4</option><option>5</option><option selected>6</option><option>7</option><option>8</option>
+        </select>
+      </div>
+      <div class="group">
+        <span class="lbl">Art</span>
+        <button class="btn upg" id="upg" title="Swap card art to the upgraded (+) versions">Show Upgraded</button>
+      </div>
+      <span class="count" id="count">91 cards</span>
+    </div>
+    <div class="row">
+      <div class="group"><span class="lbl">Type</span><span id="f-type"></span></div>
+      <div class="group"><span class="lbl">Rarity</span><span id="f-rarity"></span></div>
+      <div class="group"><span class="lbl">Cost</span><span id="f-cost"></span></div>
+      <button class="btn" id="reset">Reset</button>
+    </div>
+    <div class="row mechrow">
+      <span class="lbl">Mechanics</span>
+      <button class="btn mode" id="mechmode" title="Switch between matching ANY vs ALL of the selected mechanics">Match: ANY</button>
+      <span id="f-mech" class="mechchips"></span>
+    </div>
+  </div>
+</div>
+
+<main>
+  <noscript><div style="background:#16323f;border:1px solid #23404d;border-radius:8px;padding:10px 14px;margin-bottom:14px;color:#8fb0b9;font-size:13px;text-align:center">All 91 cards are shown below. <strong style="color:#ffd884">Open this file in a web browser</strong> to enable sorting &amp; filtering.</div></noscript>
+  <div class="grid" id="grid">
+      <a class="card" href="https://sts2.untapped.gg/en/cards/abrasive" target="_blank" rel="noopener" title="Abrasive — Rare Power, cost 3">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/abrasive.png" alt="Abrasive"></div>
+        <div class="meta">
+          <div class="name">Abrasive</div>
+          <div class="badges">
+            <span class="b cost">3 Energy</span>
+            <span class="b type" style="background:var(--t-Power)">Power</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/accelerant" target="_blank" rel="noopener" title="Accelerant — Rare Power, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/accelerant.png" alt="Accelerant"></div>
+        <div class="meta">
+          <div class="name">Accelerant</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Power)">Power</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/accuracy" target="_blank" rel="noopener" title="Accuracy — Uncommon Power, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/accuracy.png" alt="Accuracy"></div>
+        <div class="meta">
+          <div class="name">Accuracy</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Power)">Power</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/acrobatics" target="_blank" rel="noopener" title="Acrobatics — Uncommon Skill, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/acrobatics.png" alt="Acrobatics"></div>
+        <div class="meta">
+          <div class="name">Acrobatics</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/adrenaline" target="_blank" rel="noopener" title="Adrenaline — Rare Skill, cost 0">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/adrenaline.png" alt="Adrenaline"></div>
+        <div class="meta">
+          <div class="name">Adrenaline</div>
+          <div class="badges">
+            <span class="b cost">0 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/afterimage" target="_blank" rel="noopener" title="Afterimage — Rare Power, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/afterimage.png" alt="Afterimage"></div>
+        <div class="meta">
+          <div class="name">Afterimage</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Power)">Power</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/anticipate" target="_blank" rel="noopener" title="Anticipate — Common Skill, cost 0">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/anticipate.png" alt="Anticipate"></div>
+        <div class="meta">
+          <div class="name">Anticipate</div>
+          <div class="badges">
+            <span class="b cost">0 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Common)">Common</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/assassinate" target="_blank" rel="noopener" title="Assassinate — Rare Attack, cost 0">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/assassinate.png" alt="Assassinate"></div>
+        <div class="meta">
+          <div class="name">Assassinate</div>
+          <div class="badges">
+            <span class="b cost">0 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/backflip" target="_blank" rel="noopener" title="Backflip — Common Skill, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/backflip.png" alt="Backflip"></div>
+        <div class="meta">
+          <div class="name">Backflip</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Common)">Common</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/backstab" target="_blank" rel="noopener" title="Backstab — Uncommon Attack, cost 0">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/backstab.png" alt="Backstab"></div>
+        <div class="meta">
+          <div class="name">Backstab</div>
+          <div class="badges">
+            <span class="b cost">0 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/blade-dance" target="_blank" rel="noopener" title="Blade Dance — Common Skill, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/blade-dance.png" alt="Blade Dance"></div>
+        <div class="meta">
+          <div class="name">Blade Dance</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Common)">Common</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/blade-of-ink" target="_blank" rel="noopener" title="Blade of Ink — Rare Skill, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/blade-of-ink.png" alt="Blade of Ink"></div>
+        <div class="meta">
+          <div class="name">Blade of Ink</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/blur" target="_blank" rel="noopener" title="Blur — Uncommon Skill, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/blur.png" alt="Blur"></div>
+        <div class="meta">
+          <div class="name">Blur</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/bouncing-flask" target="_blank" rel="noopener" title="Bouncing Flask — Uncommon Skill, cost 2">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/bouncing-flask.png" alt="Bouncing Flask"></div>
+        <div class="meta">
+          <div class="name">Bouncing Flask</div>
+          <div class="badges">
+            <span class="b cost">2 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/bubble-bubble" target="_blank" rel="noopener" title="Bubble Bubble — Uncommon Skill, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/bubble-bubble.png" alt="Bubble Bubble"></div>
+        <div class="meta">
+          <div class="name">Bubble Bubble</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/bullet-time" target="_blank" rel="noopener" title="Bullet Time — Rare Skill, cost 3">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/bullet-time.png" alt="Bullet Time"></div>
+        <div class="meta">
+          <div class="name">Bullet Time</div>
+          <div class="badges">
+            <span class="b cost">3 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/burst" target="_blank" rel="noopener" title="Burst — Rare Skill, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/burst.png" alt="Burst"></div>
+        <div class="meta">
+          <div class="name">Burst</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/calculated-gamble" target="_blank" rel="noopener" title="Calculated Gamble — Uncommon Skill, cost 0">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/calculated-gamble.png" alt="Calculated Gamble"></div>
+        <div class="meta">
+          <div class="name">Calculated Gamble</div>
+          <div class="badges">
+            <span class="b cost">0 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/caltrops" target="_blank" rel="noopener" title="Caltrops — Event Power, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/caltrops.png" alt="Caltrops"></div>
+        <div class="meta">
+          <div class="name">Caltrops</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Power)">Power</span>
+            <span class="b rar" style="background:var(--r-Event)">Event</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/cloak-and-dagger" target="_blank" rel="noopener" title="Cloak and Dagger — Common Skill, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/cloak-and-dagger.png" alt="Cloak and Dagger"></div>
+        <div class="meta">
+          <div class="name">Cloak and Dagger</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Common)">Common</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/corrosive-wave" target="_blank" rel="noopener" title="Corrosive Wave — Rare Skill, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/corrosive-wave.png" alt="Corrosive Wave"></div>
+        <div class="meta">
+          <div class="name">Corrosive Wave</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/dagger-spray" target="_blank" rel="noopener" title="Dagger Spray — Common Attack, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/dagger-spray.png" alt="Dagger Spray"></div>
+        <div class="meta">
+          <div class="name">Dagger Spray</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Common)">Common</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/dagger-throw" target="_blank" rel="noopener" title="Dagger Throw — Common Attack, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/dagger-throw.png" alt="Dagger Throw"></div>
+        <div class="meta">
+          <div class="name">Dagger Throw</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Common)">Common</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/dash" target="_blank" rel="noopener" title="Dash — Uncommon Attack, cost 2">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/dash.png" alt="Dash"></div>
+        <div class="meta">
+          <div class="name">Dash</div>
+          <div class="badges">
+            <span class="b cost">2 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/deadly-poison" target="_blank" rel="noopener" title="Deadly Poison — Common Skill, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/deadly-poison.png" alt="Deadly Poison"></div>
+        <div class="meta">
+          <div class="name">Deadly Poison</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Common)">Common</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/defend-silent" target="_blank" rel="noopener" title="Defend — Basic Skill, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/defend-silent.png" alt="Defend"></div>
+        <div class="meta">
+          <div class="name">Defend</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Basic)">Basic</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/deflect" target="_blank" rel="noopener" title="Deflect — Common Skill, cost 0">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/deflect.png" alt="Deflect"></div>
+        <div class="meta">
+          <div class="name">Deflect</div>
+          <div class="badges">
+            <span class="b cost">0 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Common)">Common</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/distraction" target="_blank" rel="noopener" title="Distraction — Event Skill, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/distraction.png" alt="Distraction"></div>
+        <div class="meta">
+          <div class="name">Distraction</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Event)">Event</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/dodge-and-roll" target="_blank" rel="noopener" title="Dodge and Roll — Common Skill, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/dodge-and-roll.png" alt="Dodge and Roll"></div>
+        <div class="meta">
+          <div class="name">Dodge and Roll</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Common)">Common</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/echoing-slash" target="_blank" rel="noopener" title="Echoing Slash — Rare Attack, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/echoing-slash.png" alt="Echoing Slash"></div>
+        <div class="meta">
+          <div class="name">Echoing Slash</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/envenom" target="_blank" rel="noopener" title="Envenom — Rare Power, cost 2">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/envenom.png" alt="Envenom"></div>
+        <div class="meta">
+          <div class="name">Envenom</div>
+          <div class="badges">
+            <span class="b cost">2 Energy</span>
+            <span class="b type" style="background:var(--t-Power)">Power</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/escape-plan" target="_blank" rel="noopener" title="Escape Plan — Uncommon Skill, cost 0">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/escape-plan.png" alt="Escape Plan"></div>
+        <div class="meta">
+          <div class="name">Escape Plan</div>
+          <div class="badges">
+            <span class="b cost">0 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/expertise" target="_blank" rel="noopener" title="Expertise — Uncommon Skill, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/expertise.png" alt="Expertise"></div>
+        <div class="meta">
+          <div class="name">Expertise</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/expose" target="_blank" rel="noopener" title="Expose — Uncommon Skill, cost 0">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/expose.png" alt="Expose"></div>
+        <div class="meta">
+          <div class="name">Expose</div>
+          <div class="badges">
+            <span class="b cost">0 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/fan-of-knives" target="_blank" rel="noopener" title="Fan of Knives — Rare Power, cost 2">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/fan-of-knives.png" alt="Fan of Knives"></div>
+        <div class="meta">
+          <div class="name">Fan of Knives</div>
+          <div class="badges">
+            <span class="b cost">2 Energy</span>
+            <span class="b type" style="background:var(--t-Power)">Power</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/finisher" target="_blank" rel="noopener" title="Finisher — Uncommon Attack, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/finisher.png" alt="Finisher"></div>
+        <div class="meta">
+          <div class="name">Finisher</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/flanking" target="_blank" rel="noopener" title="Flanking — Uncommon Skill, cost 2">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/flanking.png" alt="Flanking"></div>
+        <div class="meta">
+          <div class="name">Flanking</div>
+          <div class="badges">
+            <span class="b cost">2 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/flechettes" target="_blank" rel="noopener" title="Flechettes — Uncommon Attack, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/flechettes.png" alt="Flechettes"></div>
+        <div class="meta">
+          <div class="name">Flechettes</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/flick-flack" target="_blank" rel="noopener" title="Flick-Flack — Common Attack, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/flick-flack.png" alt="Flick-Flack"></div>
+        <div class="meta">
+          <div class="name">Flick-Flack</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Common)">Common</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/follow-through" target="_blank" rel="noopener" title="Follow Through — Common Attack, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/follow-through.png" alt="Follow Through"></div>
+        <div class="meta">
+          <div class="name">Follow Through</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Common)">Common</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/footwork" target="_blank" rel="noopener" title="Footwork — Uncommon Power, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/footwork.png" alt="Footwork"></div>
+        <div class="meta">
+          <div class="name">Footwork</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Power)">Power</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/grand-finale" target="_blank" rel="noopener" title="Grand Finale — Rare Attack, cost 0">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/grand-finale.png" alt="Grand Finale"></div>
+        <div class="meta">
+          <div class="name">Grand Finale</div>
+          <div class="badges">
+            <span class="b cost">0 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/hand-trick" target="_blank" rel="noopener" title="Hand Trick — Uncommon Skill, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/hand-trick.png" alt="Hand Trick"></div>
+        <div class="meta">
+          <div class="name">Hand Trick</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/haze" target="_blank" rel="noopener" title="Haze — Uncommon Skill, cost 3">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/haze.png" alt="Haze"></div>
+        <div class="meta">
+          <div class="name">Haze</div>
+          <div class="badges">
+            <span class="b cost">3 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/hidden-daggers" target="_blank" rel="noopener" title="Hidden Daggers — Uncommon Skill, cost 0">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/hidden-daggers.png" alt="Hidden Daggers"></div>
+        <div class="meta">
+          <div class="name">Hidden Daggers</div>
+          <div class="badges">
+            <span class="b cost">0 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/infinite-blades" target="_blank" rel="noopener" title="Infinite Blades — Uncommon Power, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/infinite-blades.png" alt="Infinite Blades"></div>
+        <div class="meta">
+          <div class="name">Infinite Blades</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Power)">Power</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/knife-trap" target="_blank" rel="noopener" title="Knife Trap — Rare Skill, cost 2">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/knife-trap.png" alt="Knife Trap"></div>
+        <div class="meta">
+          <div class="name">Knife Trap</div>
+          <div class="badges">
+            <span class="b cost">2 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/leading-strike" target="_blank" rel="noopener" title="Leading Strike — Common Attack, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/leading-strike.png" alt="Leading Strike"></div>
+        <div class="meta">
+          <div class="name">Leading Strike</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Common)">Common</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/leg-sweep" target="_blank" rel="noopener" title="Leg Sweep — Uncommon Skill, cost 2">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/leg-sweep.png" alt="Leg Sweep"></div>
+        <div class="meta">
+          <div class="name">Leg Sweep</div>
+          <div class="badges">
+            <span class="b cost">2 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/malaise" target="_blank" rel="noopener" title="Malaise — Rare Skill, cost X">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/malaise.png" alt="Malaise"></div>
+        <div class="meta">
+          <div class="name">Malaise</div>
+          <div class="badges">
+            <span class="b cost">X Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/master-planner" target="_blank" rel="noopener" title="Master Planner — Rare Power, cost 2">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/master-planner.png" alt="Master Planner"></div>
+        <div class="meta">
+          <div class="name">Master Planner</div>
+          <div class="badges">
+            <span class="b cost">2 Energy</span>
+            <span class="b type" style="background:var(--t-Power)">Power</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/memento-mori" target="_blank" rel="noopener" title="Memento Mori — Uncommon Attack, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/memento-mori.png" alt="Memento Mori"></div>
+        <div class="meta">
+          <div class="name">Memento Mori</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/mirage" target="_blank" rel="noopener" title="Mirage — Uncommon Skill, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/mirage.png" alt="Mirage"></div>
+        <div class="meta">
+          <div class="name">Mirage</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/murder" target="_blank" rel="noopener" title="Murder — Rare Attack, cost 3">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/murder.png" alt="Murder"></div>
+        <div class="meta">
+          <div class="name">Murder</div>
+          <div class="badges">
+            <span class="b cost">3 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/neutralize" target="_blank" rel="noopener" title="Neutralize — Basic Attack, cost 0">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/neutralize.png" alt="Neutralize"></div>
+        <div class="meta">
+          <div class="name">Neutralize</div>
+          <div class="badges">
+            <span class="b cost">0 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Basic)">Basic</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/nightmare" target="_blank" rel="noopener" title="Nightmare — Rare Skill, cost 3">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/nightmare.png" alt="Nightmare"></div>
+        <div class="meta">
+          <div class="name">Nightmare</div>
+          <div class="badges">
+            <span class="b cost">3 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/noxious-fumes" target="_blank" rel="noopener" title="Noxious Fumes — Uncommon Power, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/noxious-fumes.png" alt="Noxious Fumes"></div>
+        <div class="meta">
+          <div class="name">Noxious Fumes</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Power)">Power</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/outbreak" target="_blank" rel="noopener" title="Outbreak — Uncommon Power, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/outbreak.png" alt="Outbreak"></div>
+        <div class="meta">
+          <div class="name">Outbreak</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Power)">Power</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/outmaneuver" target="_blank" rel="noopener" title="Outmaneuver — Event Skill, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/outmaneuver.png" alt="Outmaneuver"></div>
+        <div class="meta">
+          <div class="name">Outmaneuver</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Event)">Event</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/phantom-blades" target="_blank" rel="noopener" title="Phantom Blades — Uncommon Power, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/phantom-blades.png" alt="Phantom Blades"></div>
+        <div class="meta">
+          <div class="name">Phantom Blades</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Power)">Power</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/piercing-wail" target="_blank" rel="noopener" title="Piercing Wail — Common Skill, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/piercing-wail.png" alt="Piercing Wail"></div>
+        <div class="meta">
+          <div class="name">Piercing Wail</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Common)">Common</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/pinpoint" target="_blank" rel="noopener" title="Pinpoint — Uncommon Attack, cost 3">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/pinpoint.png" alt="Pinpoint"></div>
+        <div class="meta">
+          <div class="name">Pinpoint</div>
+          <div class="badges">
+            <span class="b cost">3 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/poisoned-stab" target="_blank" rel="noopener" title="Poisoned Stab — Common Attack, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/poisoned-stab.png" alt="Poisoned Stab"></div>
+        <div class="meta">
+          <div class="name">Poisoned Stab</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Common)">Common</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/pounce" target="_blank" rel="noopener" title="Pounce — Uncommon Attack, cost 2">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/pounce.png" alt="Pounce"></div>
+        <div class="meta">
+          <div class="name">Pounce</div>
+          <div class="badges">
+            <span class="b cost">2 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/precise-cut" target="_blank" rel="noopener" title="Precise Cut — Uncommon Attack, cost 0">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/precise-cut.png" alt="Precise Cut"></div>
+        <div class="meta">
+          <div class="name">Precise Cut</div>
+          <div class="badges">
+            <span class="b cost">0 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/predator" target="_blank" rel="noopener" title="Predator — Uncommon Attack, cost 2">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/predator.png" alt="Predator"></div>
+        <div class="meta">
+          <div class="name">Predator</div>
+          <div class="badges">
+            <span class="b cost">2 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/prepared" target="_blank" rel="noopener" title="Prepared — Common Skill, cost 0">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/prepared.png" alt="Prepared"></div>
+        <div class="meta">
+          <div class="name">Prepared</div>
+          <div class="badges">
+            <span class="b cost">0 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Common)">Common</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/reflex" target="_blank" rel="noopener" title="Reflex — Uncommon Skill, cost 3">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/reflex.png" alt="Reflex"></div>
+        <div class="meta">
+          <div class="name">Reflex</div>
+          <div class="badges">
+            <span class="b cost">3 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/ricochet" target="_blank" rel="noopener" title="Ricochet — Common Attack, cost 2">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/ricochet.png" alt="Ricochet"></div>
+        <div class="meta">
+          <div class="name">Ricochet</div>
+          <div class="badges">
+            <span class="b cost">2 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Common)">Common</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/serpent-form" target="_blank" rel="noopener" title="Serpent Form — Rare Power, cost 3">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/serpent-form.png" alt="Serpent Form"></div>
+        <div class="meta">
+          <div class="name">Serpent Form</div>
+          <div class="badges">
+            <span class="b cost">3 Energy</span>
+            <span class="b type" style="background:var(--t-Power)">Power</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/shadow-step" target="_blank" rel="noopener" title="Shadow Step — Rare Skill, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/shadow-step.png" alt="Shadow Step"></div>
+        <div class="meta">
+          <div class="name">Shadow Step</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/shadowmeld" target="_blank" rel="noopener" title="Shadowmeld — Rare Skill, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/shadowmeld.png" alt="Shadowmeld"></div>
+        <div class="meta">
+          <div class="name">Shadowmeld</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/skewer" target="_blank" rel="noopener" title="Skewer — Uncommon Attack, cost X">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/skewer.png" alt="Skewer"></div>
+        <div class="meta">
+          <div class="name">Skewer</div>
+          <div class="badges">
+            <span class="b cost">X Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/slice" target="_blank" rel="noopener" title="Slice — Common Attack, cost 0">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/slice.png" alt="Slice"></div>
+        <div class="meta">
+          <div class="name">Slice</div>
+          <div class="badges">
+            <span class="b cost">0 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Common)">Common</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/snakebite" target="_blank" rel="noopener" title="Snakebite — Common Skill, cost 2">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/snakebite.png" alt="Snakebite"></div>
+        <div class="meta">
+          <div class="name">Snakebite</div>
+          <div class="badges">
+            <span class="b cost">2 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Common)">Common</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/sneaky" target="_blank" rel="noopener" title="Sneaky — Rare Power, cost 2">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/sneaky.png" alt="Sneaky"></div>
+        <div class="meta">
+          <div class="name">Sneaky</div>
+          <div class="badges">
+            <span class="b cost">2 Energy</span>
+            <span class="b type" style="background:var(--t-Power)">Power</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/speedster" target="_blank" rel="noopener" title="Speedster — Uncommon Power, cost 2">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/speedster.png" alt="Speedster"></div>
+        <div class="meta">
+          <div class="name">Speedster</div>
+          <div class="badges">
+            <span class="b cost">2 Energy</span>
+            <span class="b type" style="background:var(--t-Power)">Power</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/storm-of-steel" target="_blank" rel="noopener" title="Storm of Steel — Rare Skill, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/storm-of-steel.png" alt="Storm of Steel"></div>
+        <div class="meta">
+          <div class="name">Storm of Steel</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/strangle" target="_blank" rel="noopener" title="Strangle — Uncommon Attack, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/strangle.png" alt="Strangle"></div>
+        <div class="meta">
+          <div class="name">Strangle</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/strike-silent" target="_blank" rel="noopener" title="Strike — Basic Attack, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/strike-silent.png" alt="Strike"></div>
+        <div class="meta">
+          <div class="name">Strike</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Basic)">Basic</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/sucker-punch" target="_blank" rel="noopener" title="Sucker Punch — Common Attack, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/sucker-punch.png" alt="Sucker Punch"></div>
+        <div class="meta">
+          <div class="name">Sucker Punch</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Common)">Common</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/suppress" target="_blank" rel="noopener" title="Suppress — Ancient Attack, cost 0">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/suppress.png" alt="Suppress"></div>
+        <div class="meta">
+          <div class="name">Suppress</div>
+          <div class="badges">
+            <span class="b cost">0 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Ancient)">Ancient</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/survivor" target="_blank" rel="noopener" title="Survivor — Basic Skill, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/survivor.png" alt="Survivor"></div>
+        <div class="meta">
+          <div class="name">Survivor</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Basic)">Basic</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/tactician" target="_blank" rel="noopener" title="Tactician — Uncommon Skill, cost 3">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/tactician.png" alt="Tactician"></div>
+        <div class="meta">
+          <div class="name">Tactician</div>
+          <div class="badges">
+            <span class="b cost">3 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/the-hunt" target="_blank" rel="noopener" title="The Hunt — Rare Attack, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/the-hunt.png" alt="The Hunt"></div>
+        <div class="meta">
+          <div class="name">The Hunt</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Attack)">Attack</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/tools-of-the-trade" target="_blank" rel="noopener" title="Tools of the Trade — Rare Power, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/tools-of-the-trade.png" alt="Tools of the Trade"></div>
+        <div class="meta">
+          <div class="name">Tools of the Trade</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Power)">Power</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/tracking" target="_blank" rel="noopener" title="Tracking — Rare Power, cost 2">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/tracking.png" alt="Tracking"></div>
+        <div class="meta">
+          <div class="name">Tracking</div>
+          <div class="badges">
+            <span class="b cost">2 Energy</span>
+            <span class="b type" style="background:var(--t-Power)">Power</span>
+            <span class="b rar" style="background:var(--r-Rare)">Rare</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/untouchable" target="_blank" rel="noopener" title="Untouchable — Common Skill, cost 2">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/untouchable.png" alt="Untouchable"></div>
+        <div class="meta">
+          <div class="name">Untouchable</div>
+          <div class="badges">
+            <span class="b cost">2 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Common)">Common</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/up-my-sleeve" target="_blank" rel="noopener" title="Up My Sleeve — Uncommon Skill, cost 2">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/up-my-sleeve.png" alt="Up My Sleeve"></div>
+        <div class="meta">
+          <div class="name">Up My Sleeve</div>
+          <div class="badges">
+            <span class="b cost">2 Energy</span>
+            <span class="b type" style="background:var(--t-Skill)">Skill</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/well-laid-plans" target="_blank" rel="noopener" title="Well-Laid Plans — Uncommon Power, cost 1">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/well-laid-plans.png" alt="Well-Laid Plans"></div>
+        <div class="meta">
+          <div class="name">Well-Laid Plans</div>
+          <div class="badges">
+            <span class="b cost">1 Energy</span>
+            <span class="b type" style="background:var(--t-Power)">Power</span>
+            <span class="b rar" style="background:var(--r-Uncommon)">Uncommon</span>
+          </div>
+        </div>
+      </a>
+      <a class="card" href="https://sts2.untapped.gg/en/cards/wraith-form" target="_blank" rel="noopener" title="Wraith Form — Ancient Power, cost 3">
+        <div class="imgwrap"><img loading="lazy" src="https://img-preview.untapped.gg/sts2/en/cards/wraith-form.png" alt="Wraith Form"></div>
+        <div class="meta">
+          <div class="name">Wraith Form</div>
+          <div class="badges">
+            <span class="b cost">3 Energy</span>
+            <span class="b type" style="background:var(--t-Power)">Power</span>
+            <span class="b rar" style="background:var(--r-Ancient)">Ancient</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  <div class="empty" id="empty" style="display:none">No cards match those filters.</div>
+</main>
+
+<footer>Click any card to open its full page on untapped.gg. Card art © Mega Crit / Slay the Spire 2.</footer>
+
+<script>
+const IMG = "https://img-preview.untapped.gg/sts2/en/cards/";
+const DETAIL = "https://sts2.untapped.gg/en/cards/";
+
+const CARDS = [
+  {s:"abrasive",n:"Abrasive",t:"Power",c:"3",r:"Rare",g:["Dexterity","Thorns","Sly"]},
+  {s:"accelerant",n:"Accelerant",t:"Power",c:"1",r:"Rare",g:["Poison"]},
+  {s:"accuracy",n:"Accuracy",t:"Power",c:"1",r:"Uncommon",g:["Shiv"]},
+  {s:"acrobatics",n:"Acrobatics",t:"Skill",c:"1",r:"Uncommon",g:["Draw","Discard"]},
+  {s:"adrenaline",n:"Adrenaline",t:"Skill",c:"0",r:"Rare",g:["Draw","Exhaust","Energy"]},
+  {s:"afterimage",n:"Afterimage",t:"Power",c:"1",r:"Rare",g:["Block","Combo"]},
+  {s:"anticipate",n:"Anticipate",t:"Skill",c:"0",r:"Common",g:["Dexterity"]},
+  {s:"assassinate",n:"Assassinate",t:"Attack",c:"0",r:"Rare",g:["Vulnerable","Exhaust","Innate"]},
+  {s:"backflip",n:"Backflip",t:"Skill",c:"1",r:"Common",g:["Block","Draw"]},
+  {s:"backstab",n:"Backstab",t:"Attack",c:"0",r:"Uncommon",g:["Exhaust","Innate"]},
+  {s:"blade-dance",n:"Blade Dance",t:"Skill",c:"1",r:"Common",g:["Exhaust","Shiv"]},
+  {s:"blade-of-ink",n:"Blade of Ink",t:"Skill",c:"1",r:"Rare",g:["Shiv"]},
+  {s:"blur",n:"Blur",t:"Skill",c:"1",r:"Uncommon",g:["Block","Next Turn"]},
+  {s:"bouncing-flask",n:"Bouncing Flask",t:"Skill",c:"2",r:"Uncommon",g:["Poison","Multi Hit"]},
+  {s:"bubble-bubble",n:"Bubble Bubble",t:"Skill",c:"1",r:"Uncommon",g:["Poison"]},
+  {s:"bullet-time",n:"Bullet Time",t:"Skill",c:"3",r:"Rare",g:["Draw","Energy"]},
+  {s:"burst",n:"Burst",t:"Skill",c:"1",r:"Rare",g:[]},
+  {s:"calculated-gamble",n:"Calculated Gamble",t:"Skill",c:"0",r:"Uncommon",g:["Draw","Discard","Exhaust"]},
+  {s:"caltrops",n:"Caltrops",t:"Power",c:"1",r:"Event",g:["Thorns"]},
+  {s:"cloak-and-dagger",n:"Cloak and Dagger",t:"Skill",c:"1",r:"Common",g:["Block","Shiv"]},
+  {s:"corrosive-wave",n:"Corrosive Wave",t:"Skill",c:"1",r:"Rare",g:["Poison","Draw","Hits All Enemies"]},
+  {s:"dagger-spray",n:"Dagger Spray",t:"Attack",c:"1",r:"Common",g:["Hits All Enemies","Multi Hit"]},
+  {s:"dagger-throw",n:"Dagger Throw",t:"Attack",c:"1",r:"Common",g:["Draw","Discard"]},
+  {s:"dash",n:"Dash",t:"Attack",c:"2",r:"Uncommon",g:["Block"]},
+  {s:"deadly-poison",n:"Deadly Poison",t:"Skill",c:"1",r:"Common",g:["Poison"]},
+  {s:"defend-silent",n:"Defend",t:"Skill",c:"1",r:"Basic",g:["Block"]},
+  {s:"deflect",n:"Deflect",t:"Skill",c:"0",r:"Common",g:["Block"]},
+  {s:"distraction",n:"Distraction",t:"Skill",c:"1",r:"Event",g:["Exhaust","Energy"]},
+  {s:"dodge-and-roll",n:"Dodge and Roll",t:"Skill",c:"1",r:"Common",g:["Block","Next Turn"]},
+  {s:"echoing-slash",n:"Echoing Slash",t:"Attack",c:"1",r:"Rare",g:["Hits All Enemies"]},
+  {s:"envenom",n:"Envenom",t:"Power",c:"2",r:"Rare",g:["Poison"]},
+  {s:"escape-plan",n:"Escape Plan",t:"Skill",c:"0",r:"Uncommon",g:["Block","Draw"]},
+  {s:"expertise",n:"Expertise",t:"Skill",c:"1",r:"Uncommon",g:["Draw"]},
+  {s:"expose",n:"Expose",t:"Skill",c:"0",r:"Uncommon",g:["Vulnerable","Block","Exhaust"]},
+  {s:"fan-of-knives",n:"Fan of Knives",t:"Power",c:"2",r:"Rare",g:["Shiv","Hits All Enemies"]},
+  {s:"finisher",n:"Finisher",t:"Attack",c:"1",r:"Uncommon",g:[]},
+  {s:"flanking",n:"Flanking",t:"Skill",c:"2",r:"Uncommon",g:[]},
+  {s:"flechettes",n:"Flechettes",t:"Attack",c:"1",r:"Uncommon",g:[]},
+  {s:"flick-flack",n:"Flick-Flack",t:"Attack",c:"1",r:"Common",g:["Sly","Hits All Enemies"]},
+  {s:"follow-through",n:"Follow Through",t:"Attack",c:"1",r:"Common",g:["Multi Hit"]},
+  {s:"footwork",n:"Footwork",t:"Power",c:"1",r:"Uncommon",g:["Dexterity"]},
+  {s:"grand-finale",n:"Grand Finale",t:"Attack",c:"0",r:"Rare",g:["Hits All Enemies"]},
+  {s:"hand-trick",n:"Hand Trick",t:"Skill",c:"1",r:"Uncommon",g:["Block","Sly"]},
+  {s:"haze",n:"Haze",t:"Skill",c:"3",r:"Uncommon",g:["Poison","Sly","Hits All Enemies"]},
+  {s:"hidden-daggers",n:"Hidden Daggers",t:"Skill",c:"0",r:"Uncommon",g:["Discard","Shiv"]},
+  {s:"infinite-blades",n:"Infinite Blades",t:"Power",c:"1",r:"Uncommon",g:["Shiv"]},
+  {s:"knife-trap",n:"Knife Trap",t:"Skill",c:"2",r:"Rare",g:["Exhaust","Shiv"]},
+  {s:"leading-strike",n:"Leading Strike",t:"Attack",c:"1",r:"Common",g:["Shiv"]},
+  {s:"leg-sweep",n:"Leg Sweep",t:"Skill",c:"2",r:"Uncommon",g:["Weak","Block"]},
+  {s:"malaise",n:"Malaise",t:"Skill",c:"X",r:"Rare",g:["Weak","Reduce Strength","Exhaust"]},
+  {s:"master-planner",n:"Master Planner",t:"Power",c:"2",r:"Rare",g:["Sly","Combo"]},
+  {s:"memento-mori",n:"Memento Mori",t:"Attack",c:"1",r:"Uncommon",g:["Discard"]},
+  {s:"mirage",n:"Mirage",t:"Skill",c:"1",r:"Uncommon",g:["Poison","Block","Exhaust","Hits All Enemies"]},
+  {s:"murder",n:"Murder",t:"Attack",c:"3",r:"Rare",g:["Draw"]},
+  {s:"neutralize",n:"Neutralize",t:"Attack",c:"0",r:"Basic",g:["Weak"]},
+  {s:"nightmare",n:"Nightmare",t:"Skill",c:"3",r:"Rare",g:["Exhaust","Next Turn"]},
+  {s:"noxious-fumes",n:"Noxious Fumes",t:"Power",c:"1",r:"Uncommon",g:["Poison","Hits All Enemies"]},
+  {s:"outbreak",n:"Outbreak",t:"Power",c:"1",r:"Uncommon",g:["Poison","Hits All Enemies"]},
+  {s:"outmaneuver",n:"Outmaneuver",t:"Skill",c:"1",r:"Event",g:["Energy","Next Turn"]},
+  {s:"phantom-blades",n:"Phantom Blades",t:"Power",c:"1",r:"Uncommon",g:["Retain","Shiv"]},
+  {s:"piercing-wail",n:"Piercing Wail",t:"Skill",c:"1",r:"Common",g:["Reduce Strength","Exhaust","Hits All Enemies"]},
+  {s:"pinpoint",n:"Pinpoint",t:"Attack",c:"3",r:"Uncommon",g:["Energy"]},
+  {s:"poisoned-stab",n:"Poisoned Stab",t:"Attack",c:"1",r:"Common",g:["Poison"]},
+  {s:"pounce",n:"Pounce",t:"Attack",c:"2",r:"Uncommon",g:["Energy"]},
+  {s:"precise-cut",n:"Precise Cut",t:"Attack",c:"0",r:"Uncommon",g:[]},
+  {s:"predator",n:"Predator",t:"Attack",c:"2",r:"Uncommon",g:["Draw","Next Turn"]},
+  {s:"prepared",n:"Prepared",t:"Skill",c:"0",r:"Common",g:["Draw","Discard"]},
+  {s:"reflex",n:"Reflex",t:"Skill",c:"3",r:"Uncommon",g:["Draw","Sly"]},
+  {s:"ricochet",n:"Ricochet",t:"Attack",c:"2",r:"Common",g:["Sly","Multi Hit"]},
+  {s:"serpent-form",n:"Serpent Form",t:"Power",c:"3",r:"Rare",g:["Combo"]},
+  {s:"shadow-step",n:"Shadow Step",t:"Skill",c:"1",r:"Rare",g:["Discard","Next Turn"]},
+  {s:"shadowmeld",n:"Shadowmeld",t:"Skill",c:"1",r:"Rare",g:["Block"]},
+  {s:"skewer",n:"Skewer",t:"Attack",c:"X",r:"Uncommon",g:["Multi Hit"]},
+  {s:"slice",n:"Slice",t:"Attack",c:"0",r:"Common",g:[]},
+  {s:"snakebite",n:"Snakebite",t:"Skill",c:"2",r:"Common",g:["Poison","Retain"]},
+  {s:"sneaky",n:"Sneaky",t:"Power",c:"2",r:"Rare",g:["Block","Sly"]},
+  {s:"speedster",n:"Speedster",t:"Power",c:"2",r:"Uncommon",g:["Draw","Hits All Enemies"]},
+  {s:"storm-of-steel",n:"Storm of Steel",t:"Skill",c:"1",r:"Rare",g:["Discard","Shiv"]},
+  {s:"strangle",n:"Strangle",t:"Attack",c:"1",r:"Uncommon",g:["Combo"]},
+  {s:"strike-silent",n:"Strike",t:"Attack",c:"1",r:"Basic",g:[]},
+  {s:"sucker-punch",n:"Sucker Punch",t:"Attack",c:"1",r:"Common",g:["Weak"]},
+  {s:"suppress",n:"Suppress",t:"Attack",c:"0",r:"Ancient",g:["Weak","Innate"]},
+  {s:"survivor",n:"Survivor",t:"Skill",c:"1",r:"Basic",g:["Block","Discard"]},
+  {s:"tactician",n:"Tactician",t:"Skill",c:"3",r:"Uncommon",g:["Sly","Energy"]},
+  {s:"the-hunt",n:"The Hunt",t:"Attack",c:"1",r:"Rare",g:["Exhaust"]},
+  {s:"tools-of-the-trade",n:"Tools of the Trade",t:"Power",c:"1",r:"Rare",g:["Draw","Discard"]},
+  {s:"tracking",n:"Tracking",t:"Power",c:"2",r:"Rare",g:["Weak"]},
+  {s:"untouchable",n:"Untouchable",t:"Skill",c:"2",r:"Common",g:["Block","Sly"]},
+  {s:"up-my-sleeve",n:"Up My Sleeve",t:"Skill",c:"2",r:"Uncommon",g:["Shiv","Energy"]},
+  {s:"well-laid-plans",n:"Well-Laid Plans",t:"Power",c:"1",r:"Uncommon",g:["Retain"]},
+  {s:"wraith-form",n:"Wraith Form",t:"Power",c:"3",r:"Ancient",g:["Dexterity","Intangible"]}
+];
+
+const RARITY_ORDER = {Basic:0,Common:1,Uncommon:2,Rare:3,Event:4,Ancient:5};
+const TYPE_ORDER = {Attack:0,Skill:1,Power:2};
+const costVal = c => c==="X" ? 999 : parseInt(c,10);
+
+const state = { search:"", sort:"name", dir:1, cols:6, type:new Set(), rarity:new Set(), cost:new Set(), mech:new Set(), mechMode:"any", upgraded:false };
+
+function uniqSorted(key, order){ const vals=[...new Set(CARDS.map(c=>c[key]))]; return order ? vals.sort((a,b)=>order[a]-order[b]) : vals.sort((a,b)=>costVal(a)-costVal(b)); }
+function makeChips(containerId, key, values, cssExtra){
+  const box=document.getElementById(containerId);
+  values.forEach(v=>{
+    const el=document.createElement("span");
+    el.className="chip"+(cssExtra?(" "+cssExtra):"");
+    el.textContent=v;
+    if(key==="rarity"){ el.style.setProperty("--c","var(--r-"+v+")"); }
+    el.onclick=()=>{
+      const set=state[key];
+      if(set.has(v)) set.delete(v); else set.add(v);
+      el.classList.toggle("on", set.has(v));
+      if(key==="rarity"||key==="type") el.style.background = set.has(v) ? (key==="rarity"?("var(--r-"+v+")"):("var(--t-"+v+")")) : "";
+      if(key==="rarity"||key==="type") el.style.borderColor = set.has(v) ? (key==="rarity"?("var(--r-"+v+")"):("var(--t-"+v+")")) : "";
+      render();
+    };
+    box.appendChild(el);
+  });
+}
+makeChips("f-type","type",uniqSorted("t",TYPE_ORDER),"type-chip");
+makeChips("f-rarity","rarity",uniqSorted("r",RARITY_ORDER),"rar");
+makeChips("f-cost","cost",uniqSorted("c",null));
+
+const MECH = ["Poison","Weak","Vulnerable","Reduce Strength","Block","Dexterity","Thorns","Intangible","Draw","Discard","Exhaust","Retain","Sly","Shiv","Innate","Hits All Enemies","Energy","Combo","Multi Hit","Next Turn"];
+(function(){
+  const box=document.getElementById("f-mech");
+  MECH.forEach(m=>{
+    const n=CARDS.filter(c=>(c.g||[]).includes(m)).length;
+    const el=document.createElement("span");
+    el.className="chip mech";
+    el.innerHTML=m+' <span class="ct">'+n+'</span>';
+    el.onclick=()=>{ const set=state.mech; if(set.has(m)) set.delete(m); else set.add(m); el.classList.toggle("on",set.has(m)); render(); };
+    box.appendChild(el);
+  });
+})();
+const mechModeBtn=document.getElementById("mechmode");
+mechModeBtn.addEventListener("click",()=>{ state.mechMode = state.mechMode==="any"?"all":"any"; mechModeBtn.textContent="Match: "+state.mechMode.toUpperCase(); render(); });
+
+function passesFilters(c){
+  if(state.type.size && !state.type.has(c.t)) return false;
+  if(state.rarity.size && !state.rarity.has(c.r)) return false;
+  if(state.cost.size && !state.cost.has(c.c)) return false;
+  if(state.search){ if(!c.n.toLowerCase().includes(state.search.toLowerCase())) return false; }
+  if(state.mech.size){
+    const tags=c.g||[];
+    if(state.mechMode==="all"){ for(const mm of state.mech){ if(!tags.includes(mm)) return false; } }
+    else { let ok=false; for(const mm of state.mech){ if(tags.includes(mm)){ ok=true; break; } } if(!ok) return false; }
+  }
+  return true;
+}
+function compare(a,b){
+  let pa,pb;
+  if(state.sort==="cost"){ pa=costVal(a.c); pb=costVal(b.c); }
+  else if(state.sort==="rarity"){ pa=RARITY_ORDER[a.r]; pb=RARITY_ORDER[b.r]; }
+  else if(state.sort==="type"){ pa=TYPE_ORDER[a.t]; pb=TYPE_ORDER[b.t]; }
+  else { pa=a.n.toLowerCase(); pb=b.n.toLowerCase(); }
+  let r = pa<pb?-1:pa>pb?1:0;
+  if(r===0 && state.sort!=="name") r = a.n.toLowerCase()<b.n.toLowerCase()?-1:1;
+  return r*state.dir;
+}
+
+const grid=document.getElementById("grid");
+const empty=document.getElementById("empty");
+const countEl=document.getElementById("count");
+
+function render(){
+  const list=CARDS.filter(passesFilters).sort(compare);
+  countEl.textContent = list.length===CARDS.length ? (CARDS.length+" cards") : (list.length+" of "+CARDS.length+" cards");
+  grid.innerHTML="";
+  empty.style.display = list.length? "none":"block";
+  const frag=document.createDocumentFragment();
+  for(const c of list){
+    const a=document.createElement("a");
+    a.className="card";
+    a.href=DETAIL+c.s; a.target="_blank"; a.rel="noopener";
+    a.title=c.n+" — "+c.r+" "+c.t+", cost "+c.c+((c.g&&c.g.length)?(" · "+c.g.join(", ")):"");
+    a.innerHTML='<div class="imgwrap"><img loading="lazy" src="'+IMG+c.s+(state.upgraded?"-upgraded":"")+'.png" alt="'+c.n.replace(/"/g,"&quot;")+'"></div>'
+      +'<div class="meta"><div class="name">'+c.n+(state.upgraded?"+":"")+'</div><div class="badges">'
+      +'<span class="b cost">'+(c.c==="X"?"X":c.c)+' Energy</span>'
+      +'<span class="b type" style="background:var(--t-'+c.t+')">'+c.t+'</span>'
+      +'<span class="b rar" style="background:var(--r-'+c.r+')">'+c.r+'</span>'
+      +'</div></div>';
+    frag.appendChild(a);
+  }
+  grid.appendChild(frag);
+}
+
+document.getElementById("search").addEventListener("input",e=>{state.search=e.target.value;render();});
+document.getElementById("sort").addEventListener("change",e=>{state.sort=e.target.value;render();});
+const dirBtn=document.getElementById("dir");
+dirBtn.addEventListener("click",()=>{ state.dir*=-1; dirBtn.textContent = state.dir===1?"↑":"↓"; render(); });
+document.getElementById("cols").addEventListener("change",e=>{ document.documentElement.style.setProperty("--cols",e.target.value); });
+const upgBtn=document.getElementById("upg");
+upgBtn.addEventListener("click",()=>{ state.upgraded=!state.upgraded; upgBtn.classList.toggle("on",state.upgraded); upgBtn.textContent=state.upgraded?"Showing Upgraded":"Show Upgraded"; render(); });
+document.getElementById("reset").addEventListener("click",()=>{
+  state.search=""; state.sort="name"; state.dir=1;
+  state.type.clear(); state.rarity.clear(); state.cost.clear();
+  state.mech.clear(); state.mechMode="any";
+  document.getElementById("search").value="";
+  document.getElementById("sort").value="name";
+  dirBtn.textContent="↑";
+  mechModeBtn.textContent="Match: ANY";
+  state.upgraded=false; upgBtn.classList.remove("on"); upgBtn.textContent="Show Upgraded";
+  document.querySelectorAll(".chip.on").forEach(ch=>{ch.classList.remove("on");ch.style.background="";ch.style.borderColor="";});
+  render();
+});
+
+document.getElementById("subcount").textContent=CARDS.length;
+render();
+</script>
+</body>
+</html>
