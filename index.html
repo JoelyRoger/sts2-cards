@@ -113,17 +113,23 @@
   .btn.mode{background:var(--mech-bg);border-color:var(--mech);color:var(--mech);font-weight:700}
   .btn.mode:hover{color:#fff}
   .btn.upg.on{background:#1b3a21;border-color:var(--upg);color:var(--upg)}
+  .charrow{align-items:center}
+  .chartabs{display:flex;gap:8px;flex-wrap:wrap}
+  .chartab{border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:7px 16px;border-radius:8px;font-size:14px;font-weight:800;cursor:pointer;letter-spacing:.3px}
+  .chartab:hover{color:var(--text);border-color:var(--muted)}
+  .chartab.on{background:var(--gold);border-color:var(--gold);color:#23180a}
 </style>
 </head>
 <body>
 <header class="top">
-  <h1>Slay the Spire 2 — Silent Cards</h1>
+  <h1>Slay the Spire 2 — Card Browser</h1>
   <p><span id="subcount">91</span> cards · sort &amp; filter by cost, rarity, and type · data &amp; art from
     <a class="src" href="https://sts2.untapped.gg/en/tier-list/cards/silent" target="_blank" rel="noopener">untapped.gg</a></p>
 </header>
 
 <div class="toolbar">
   <div class="wrap">
+    <div class="row charrow"><span class="lbl">Character</span><span id="chartabs" class="chartabs"></span></div>
     <div class="row">
       <input type="search" id="search" placeholder="Search by name…" autocomplete="off">
       <div class="group">
@@ -1176,7 +1182,8 @@
 const IMG = "https://img-preview.untapped.gg/sts2/en/cards/";
 const DETAIL = "https://sts2.untapped.gg/en/cards/";
 
-const CARDS = [
+const DATA = {
+  silent: { name:"Silent", mech:["Poison","Weak","Vulnerable","Reduce Strength","Block","Dexterity","Thorns","Intangible","Draw","Discard","Exhaust","Retain","Sly","Shiv","Innate","Hits All Enemies","Energy","Combo","Multi Hit","Next Turn"], cards:[
   {s:"abrasive",n:"Abrasive",t:"Power",c:"3",r:"Rare",g:["Dexterity","Thorns","Sly"]},
   {s:"accelerant",n:"Accelerant",t:"Power",c:"1",r:"Rare",g:["Poison"]},
   {s:"accuracy",n:"Accuracy",t:"Power",c:"1",r:"Uncommon",g:["Shiv"]},
@@ -1268,89 +1275,143 @@ const CARDS = [
   {s:"up-my-sleeve",n:"Up My Sleeve",t:"Skill",c:"2",r:"Uncommon",g:["Shiv","Energy"]},
   {s:"well-laid-plans",n:"Well-Laid Plans",t:"Power",c:"1",r:"Uncommon",g:["Retain"]},
   {s:"wraith-form",n:"Wraith Form",t:"Power",c:"3",r:"Ancient",g:["Dexterity","Intangible"]}
-];
+] },
+  regent: { name:"Regent", mech:["Blade Build","Blade Offensive","Energy","Create","Colourless","Minions","Tempo","Draw-Pile","Block","Draw","Hits All Enemies","Exhaust","Next Turn","Weak","Vulnerable","Gain Strength","Reduce Strength","Multi Hit","Vigor","Ethereal"], cards:[
+  {s:"alignment",n:"Alignment",t:"Skill",c:"0",r:"Uncommon",g:["Energy"]},
+  {s:"arsenal",n:"Arsenal",t:"Power",c:"1",r:"Rare",g:["Create","Gain Strength"]},
+  {s:"astral-pulse",n:"Astral Pulse",t:"Attack",c:"0",r:"Common",g:["Hits All Enemies"]},
+  {s:"beat-into-shape",n:"Beat into Shape",t:"Attack",c:"1",r:"Rare",g:["Blade Build"]},
+  {s:"begone",n:"BEGONE!",t:"Skill",c:"1",r:"Common",g:["Create","Minions"]},
+  {s:"big-bang",n:"Big Bang",t:"Skill",c:"0",r:"Rare",g:["Blade Build","Energy","Draw","Exhaust"]},
+  {s:"black-hole",n:"Black Hole",t:"Power",c:"1",r:"Uncommon",g:["Energy","Hits All Enemies"]},
+  {s:"bombardment",n:"Bombardment",t:"Attack",c:"3",r:"Rare",g:["Exhaust"]},
+  {s:"bulwark",n:"Bulwark",t:"Skill",c:"2",r:"Uncommon",g:["Blade Build","Block"]},
+  {s:"bundle-of-joy",n:"Bundle of Joy",t:"Skill",c:"1",r:"Rare",g:["Colourless","Exhaust"]},
+  {s:"celestial-might",n:"Celestial Might",t:"Attack",c:"2",r:"Common",g:["Multi Hit"]},
+  {s:"charge",n:"CHARGE!!",t:"Skill",c:"1",r:"Uncommon",g:["Create","Minions","Draw-Pile"]},
+  {s:"child-of-the-stars",n:"Child of the Stars",t:"Power",c:"1",r:"Uncommon",g:["Energy","Block"]},
+  {s:"cloak-of-stars",n:"Cloak of Stars",t:"Skill",c:"0",r:"Common",g:["Block"]},
+  {s:"collision-course",n:"Collision Course",t:"Attack",c:"0",r:"Common",g:["Create"]},
+  {s:"comet",n:"Comet",t:"Attack",c:"0",r:"Rare",g:["Weak","Vulnerable"]},
+  {s:"conqueror",n:"Conqueror",t:"Skill",c:"1",r:"Uncommon",g:["Blade Build","Blade Offensive"]},
+  {s:"convergence",n:"Convergence",t:"Skill",c:"1",r:"Uncommon",g:["Energy","Next Turn"]},
+  {s:"cosmic-indifference",n:"Cosmic Indifference",t:"Skill",c:"1",r:"Common",g:["Draw-Pile","Block"]},
+  {s:"crash-landing",n:"Crash Landing",t:"Attack",c:"1",r:"Rare",g:["Create","Hits All Enemies"]},
+  {s:"crescent-spear",n:"Crescent Spear",t:"Attack",c:"1",r:"Common",g:[]},
+  {s:"crush-under",n:"Crush Under",t:"Attack",c:"1",r:"Common",g:["Hits All Enemies","Reduce Strength"]},
+  {s:"decisions-decisions",n:"Decisions, Decisions",t:"Skill",c:"0",r:"Rare",g:["Draw","Exhaust"]},
+  {s:"defend-regent",n:"Defend",t:"Skill",c:"1",r:"Basic",g:["Block"]},
+  {s:"devastate",n:"Devastate",t:"Attack",c:"1",r:"Uncommon",g:[]},
+  {s:"dying-star",n:"Dying Star",t:"Attack",c:"1",r:"Rare",g:["Hits All Enemies","Reduce Strength","Ethereal"]},
+  {s:"falling-star",n:"Falling Star",t:"Attack",c:"0",r:"Basic",g:["Weak","Vulnerable"]},
+  {s:"foregone-conclusion",n:"Foregone Conclusion",t:"Skill",c:"1",r:"Rare",g:["Draw-Pile","Next Turn"]},
+  {s:"furnace",n:"Furnace",t:"Power",c:"1",r:"Uncommon",g:["Blade Build"]},
+  {s:"gamma-blast",n:"Gamma Blast",t:"Attack",c:"0",r:"Uncommon",g:["Weak","Vulnerable"]},
+  {s:"gather-light",n:"Gather Light",t:"Skill",c:"1",r:"Common",g:["Energy","Block"]},
+  {s:"genesis",n:"Genesis",t:"Power",c:"2",r:"Rare",g:["Energy"]},
+  {s:"glimmer",n:"Glimmer",t:"Skill",c:"1",r:"Uncommon",g:["Draw-Pile","Draw"]},
+  {s:"glitterstream",n:"Glitterstream",t:"Skill",c:"2",r:"Common",g:["Block","Next Turn"]},
+  {s:"glow",n:"Glow",t:"Skill",c:"1",r:"Common",g:["Energy","Draw","Next Turn"]},
+  {s:"guards",n:"GUARDS!!!",t:"Skill",c:"2",r:"Rare",g:["Create","Minions","Exhaust"]},
+  {s:"guiding-star",n:"Guiding Star",t:"Attack",c:"1",r:"Common",g:["Draw"]},
+  {s:"hammer-time",n:"Hammer Time",t:"Power",c:"2",r:"Rare",g:["Blade Build"]},
+  {s:"heavenly-drill",n:"Heavenly Drill",t:"Attack",c:"X",r:"Rare",g:["Multi Hit"]},
+  {s:"hegemony",n:"Hegemony",t:"Attack",c:"2",r:"Uncommon",g:["Energy","Next Turn"]},
+  {s:"heirloom-hammer",n:"Heirloom Hammer",t:"Attack",c:"2",r:"Rare",g:["Colourless"]},
+  {s:"hidden-cache",n:"Hidden Cache",t:"Skill",c:"1",r:"Common",g:["Energy","Next Turn"]},
+  {s:"i-am-invincible",n:"I Am Invincible",t:"Skill",c:"1",r:"Rare",g:["Draw-Pile","Block"]},
+  {s:"kingly-kick",n:"Kingly Kick",t:"Attack",c:"4",r:"Uncommon",g:["Draw"]},
+  {s:"kingly-punch",n:"Kingly Punch",t:"Attack",c:"1",r:"Uncommon",g:["Draw"]},
+  {s:"knockout-blow",n:"Knockout Blow",t:"Attack",c:"3",r:"Uncommon",g:["Energy"]},
+  {s:"know-thy-place",n:"Know Thy Place",t:"Skill",c:"0",r:"Common",g:["Exhaust","Weak","Vulnerable"]},
+  {s:"largesse",n:"Largesse",t:"Skill",c:"0",r:"Uncommon",g:["Colourless"]},
+  {s:"lunar-blast",n:"Lunar Blast",t:"Attack",c:"0",r:"Uncommon",g:["Tempo"]},
+  {s:"make-it-so",n:"Make It So",t:"Attack",c:"0",r:"Rare",g:["Tempo"]},
+  {s:"manifest-authority",n:"Manifest Authority",t:"Skill",c:"1",r:"Uncommon",g:["Colourless","Block"]},
+  {s:"meteor-shower",n:"Meteor Shower",t:"Attack",c:"0",r:"Ancient",g:["Hits All Enemies","Weak","Vulnerable"]},
+  {s:"monarchs-gaze",n:"Monarch's Gaze",t:"Power",c:"3",r:"Rare",g:["Reduce Strength"]},
+  {s:"monologue",n:"Monologue",t:"Skill",c:"0",r:"Uncommon",g:["Tempo","Gain Strength"]},
+  {s:"neutron-aegis",n:"Neutron Aegis",t:"Power",c:"1",r:"Rare",g:[]},
+  {s:"orbit",n:"Orbit",t:"Power",c:"2",r:"Uncommon",g:["Energy"]},
+  {s:"pale-blue-dot",n:"Pale Blue Dot",t:"Power",c:"1",r:"Uncommon",g:["Tempo","Draw","Next Turn"]},
+  {s:"parry",n:"Parry",t:"Power",c:"1",r:"Uncommon",g:["Blade Offensive","Block"]},
+  {s:"particle-wall",n:"Particle Wall",t:"Skill",c:"0",r:"Uncommon",g:["Block"]},
+  {s:"patter",n:"Patter",t:"Skill",c:"1",r:"Common",g:["Block","Vigor"]},
+  {s:"photon-cut",n:"Photon Cut",t:"Attack",c:"1",r:"Common",g:["Draw-Pile","Draw"]},
+  {s:"pillar-of-creation",n:"Pillar of Creation",t:"Power",c:"1",r:"Uncommon",g:["Create","Block"]},
+  {s:"prophesize",n:"Prophesize",t:"Skill",c:"2",r:"Uncommon",g:["Draw"]},
+  {s:"quasar",n:"Quasar",t:"Skill",c:"0",r:"Uncommon",g:["Colourless"]},
+  {s:"radiate",n:"Radiate",t:"Attack",c:"0",r:"Uncommon",g:["Energy","Hits All Enemies"]},
+  {s:"refine-blade",n:"Refine Blade",t:"Skill",c:"1",r:"Common",g:["Blade Build","Next Turn"]},
+  {s:"reflect",n:"Reflect",t:"Skill",c:"1",r:"Uncommon",g:["Block"]},
+  {s:"resonance",n:"Resonance",t:"Skill",c:"1",r:"Uncommon",g:["Hits All Enemies","Gain Strength","Reduce Strength"]},
+  {s:"royal-gamble",n:"Royal Gamble",t:"Skill",c:"0",r:"Uncommon",g:["Energy","Exhaust"]},
+  {s:"royalties",n:"Royalties",t:"Power",c:"1",r:"Rare",g:[]},
+  {s:"seeking-edge",n:"Seeking Edge",t:"Power",c:"1",r:"Rare",g:["Blade Build","Blade Offensive","Hits All Enemies"]},
+  {s:"seven-stars",n:"Seven Stars",t:"Attack",c:"2",r:"Rare",g:["Hits All Enemies","Multi Hit"]},
+  {s:"shining-strike",n:"Shining Strike",t:"Attack",c:"1",r:"Uncommon",g:["Energy","Draw-Pile"]},
+  {s:"solar-strike",n:"Solar Strike",t:"Attack",c:"1",r:"Common",g:["Energy"]},
+  {s:"spectrum-shift",n:"Spectrum Shift",t:"Power",c:"2",r:"Uncommon",g:["Colourless"]},
+  {s:"spoils-of-battle",n:"Spoils of Battle",t:"Skill",c:"1",r:"Common",g:["Blade Build","Draw"]},
+  {s:"stardust",n:"Stardust",t:"Attack",c:"X",r:"Uncommon",g:["Multi Hit"]},
+  {s:"strike-regent",n:"Strike",t:"Attack",c:"1",r:"Basic",g:[]},
+  {s:"summon-forth",n:"Summon Forth",t:"Skill",c:"1",r:"Uncommon",g:["Blade Build","Blade Offensive"]},
+  {s:"supermassive",n:"Supermassive",t:"Attack",c:"1",r:"Uncommon",g:["Create"]},
+  {s:"sword-sage",n:"Sword Sage",t:"Power",c:"2",r:"Rare",g:["Blade Offensive"]},
+  {s:"terraforming",n:"Terraforming",t:"Skill",c:"1",r:"Uncommon",g:["Vigor"]},
+  {s:"the-sealed-throne",n:"The Sealed Throne",t:"Power",c:"1",r:"Ancient",g:["Energy","Tempo"]},
+  {s:"the-smith",n:"The Smith",t:"Skill",c:"1",r:"Rare",g:["Blade Build"]},
+  {s:"tyranny",n:"Tyranny",t:"Power",c:"1",r:"Rare",g:["Draw","Exhaust"]},
+  {s:"venerate",n:"Venerate",t:"Skill",c:"1",r:"Basic",g:["Energy"]},
+  {s:"void-form",n:"Void Form",t:"Power",c:"3",r:"Rare",g:["Energy","Tempo","Ethereal"]},
+  {s:"wrought-in-war",n:"Wrought in War",t:"Attack",c:"1",r:"Common",g:["Blade Build"]}
+] }
+};
 
 const RARITY_ORDER = {Basic:0,Common:1,Uncommon:2,Rare:3,Event:4,Ancient:5};
 const TYPE_ORDER = {Attack:0,Skill:1,Power:2};
 const costVal = c => c==="X" ? 999 : parseInt(c,10);
 
-const state = { search:"", sort:"name", dir:1, cols:6, type:new Set(), rarity:new Set(), cost:new Set(), mech:new Set(), mechMode:"any", upgraded:false };
+const state = { character:"silent", search:"", sort:"name", dir:1, cols:6, type:new Set(), rarity:new Set(), cost:new Set(), mech:new Set(), mechMode:"any", upgraded:false };
+function curCards(){ return DATA[state.character].cards; }
 
-function uniqSorted(key, order){ const vals=[...new Set(CARDS.map(c=>c[key]))]; return order ? vals.sort((a,b)=>order[a]-order[b]) : vals.sort((a,b)=>costVal(a)-costVal(b)); }
-function makeChips(containerId, key, values, cssExtra){
-  const box=document.getElementById(containerId);
-  values.forEach(v=>{
-    const el=document.createElement("span");
-    el.className="chip"+(cssExtra?(" "+cssExtra):"");
-    el.textContent=v;
-    if(key==="rarity"){ el.style.setProperty("--c","var(--r-"+v+")"); }
-    el.onclick=()=>{
-      const set=state[key];
-      if(set.has(v)) set.delete(v); else set.add(v);
-      el.classList.toggle("on", set.has(v));
-      if(key==="rarity"||key==="type") el.style.background = set.has(v) ? (key==="rarity"?("var(--r-"+v+")"):("var(--t-"+v+")")) : "";
-      if(key==="rarity"||key==="type") el.style.borderColor = set.has(v) ? (key==="rarity"?("var(--r-"+v+")"):("var(--t-"+v+")")) : "";
-      render();
-    };
-    box.appendChild(el);
-  });
+function uniqSorted(cards, key, order){ const vals=[...new Set(cards.map(c=>c[key]))]; return order ? vals.sort((a,b)=>order[a]-order[b]) : vals.sort((a,b)=>costVal(a)-costVal(b)); }
+
+function buildFilterChips(){
+  ["f-type","f-rarity","f-cost","f-mech"].forEach(id=>document.getElementById(id).innerHTML="");
+  const cards=curCards();
+  uniqSorted(cards,"t",TYPE_ORDER).forEach(v=>{ const el=document.createElement("span"); el.className="chip type-chip"; el.textContent=v; el.onclick=()=>tog("type",v,el); document.getElementById("f-type").appendChild(el); });
+  uniqSorted(cards,"r",RARITY_ORDER).forEach(v=>{ const el=document.createElement("span"); el.className="chip rar"; el.textContent=v; el.onclick=()=>tog("rarity",v,el); document.getElementById("f-rarity").appendChild(el); });
+  uniqSorted(cards,"c",null).forEach(v=>{ const el=document.createElement("span"); el.className="chip"; el.textContent=v; el.onclick=()=>tog("cost",v,el); document.getElementById("f-cost").appendChild(el); });
+  DATA[state.character].mech.forEach(mm=>{ const n=cards.filter(c=>(c.g||[]).includes(mm)).length; const el=document.createElement("span"); el.className="chip mech"; el.innerHTML=mm+' <span class="ct">'+n+'</span>'; el.onclick=()=>{ const set=state.mech; if(set.has(mm)) set.delete(mm); else set.add(mm); el.classList.toggle("on",set.has(mm)); render(); }; document.getElementById("f-mech").appendChild(el); });
 }
-makeChips("f-type","type",uniqSorted("t",TYPE_ORDER),"type-chip");
-makeChips("f-rarity","rarity",uniqSorted("r",RARITY_ORDER),"rar");
-makeChips("f-cost","cost",uniqSorted("c",null));
-
-const MECH = ["Poison","Weak","Vulnerable","Reduce Strength","Block","Dexterity","Thorns","Intangible","Draw","Discard","Exhaust","Retain","Sly","Shiv","Innate","Hits All Enemies","Energy","Combo","Multi Hit","Next Turn"];
-(function(){
-  const box=document.getElementById("f-mech");
-  MECH.forEach(m=>{
-    const n=CARDS.filter(c=>(c.g||[]).includes(m)).length;
-    const el=document.createElement("span");
-    el.className="chip mech";
-    el.innerHTML=m+' <span class="ct">'+n+'</span>';
-    el.onclick=()=>{ const set=state.mech; if(set.has(m)) set.delete(m); else set.add(m); el.classList.toggle("on",set.has(m)); render(); };
-    box.appendChild(el);
-  });
-})();
-const mechModeBtn=document.getElementById("mechmode");
-mechModeBtn.addEventListener("click",()=>{ state.mechMode = state.mechMode==="any"?"all":"any"; mechModeBtn.textContent="Match: "+state.mechMode.toUpperCase(); render(); });
+function tog(key,v,el){ const set=state[key]; if(set.has(v)) set.delete(v); else set.add(v); el.classList.toggle("on",set.has(v)); if(key==="rarity"||key==="type"){ const col=set.has(v)?(key==="rarity"?("var(--r-"+v+")"):("var(--t-"+v+")")):""; el.style.background=col; el.style.borderColor=col; } render(); }
 
 function passesFilters(c){
   if(state.type.size && !state.type.has(c.t)) return false;
   if(state.rarity.size && !state.rarity.has(c.r)) return false;
   if(state.cost.size && !state.cost.has(c.c)) return false;
   if(state.search){ if(!c.n.toLowerCase().includes(state.search.toLowerCase())) return false; }
-  if(state.mech.size){
-    const tags=c.g||[];
-    if(state.mechMode==="all"){ for(const mm of state.mech){ if(!tags.includes(mm)) return false; } }
-    else { let ok=false; for(const mm of state.mech){ if(tags.includes(mm)){ ok=true; break; } } if(!ok) return false; }
-  }
+  if(state.mech.size){ const tags=c.g||[]; if(state.mechMode==="all"){ for(const mm of state.mech){ if(!tags.includes(mm)) return false; } } else { let ok=false; for(const mm of state.mech){ if(tags.includes(mm)){ok=true;break;} } if(!ok) return false; } }
   return true;
 }
-function compare(a,b){
-  let pa,pb;
-  if(state.sort==="cost"){ pa=costVal(a.c); pb=costVal(b.c); }
-  else if(state.sort==="rarity"){ pa=RARITY_ORDER[a.r]; pb=RARITY_ORDER[b.r]; }
-  else if(state.sort==="type"){ pa=TYPE_ORDER[a.t]; pb=TYPE_ORDER[b.t]; }
-  else { pa=a.n.toLowerCase(); pb=b.n.toLowerCase(); }
-  let r = pa<pb?-1:pa>pb?1:0;
-  if(r===0 && state.sort!=="name") r = a.n.toLowerCase()<b.n.toLowerCase()?-1:1;
-  return r*state.dir;
-}
+function compare(a,b){ let pa,pb; if(state.sort==="cost"){pa=costVal(a.c);pb=costVal(b.c);} else if(state.sort==="rarity"){pa=RARITY_ORDER[a.r];pb=RARITY_ORDER[b.r];} else if(state.sort==="type"){pa=TYPE_ORDER[a.t];pb=TYPE_ORDER[b.t];} else {pa=a.n.toLowerCase();pb=b.n.toLowerCase();} let r=pa<pb?-1:pa>pb?1:0; if(r===0&&state.sort!=="name") r=a.n.toLowerCase()<b.n.toLowerCase()?-1:1; return r*state.dir; }
 
 const grid=document.getElementById("grid");
 const empty=document.getElementById("empty");
 const countEl=document.getElementById("count");
 
 function render(){
-  const list=CARDS.filter(passesFilters).sort(compare);
-  countEl.textContent = list.length===CARDS.length ? (CARDS.length+" cards") : (list.length+" of "+CARDS.length+" cards");
+  const cards=curCards();
+  const list=cards.filter(passesFilters).sort(compare);
+  document.getElementById("subcount").textContent=cards.length;
+  countEl.textContent = list.length===cards.length ? (cards.length+" cards") : (list.length+" of "+cards.length+" cards");
   grid.innerHTML="";
-  empty.style.display = list.length? "none":"block";
+  empty.style.display=list.length?"none":"block";
   const frag=document.createDocumentFragment();
   for(const c of list){
     const a=document.createElement("a");
-    a.className="card";
-    a.href=DETAIL+c.s; a.target="_blank"; a.rel="noopener";
+    a.className="card"; a.href=DETAIL+c.s; a.target="_blank"; a.rel="noopener";
     a.title=c.n+" — "+c.r+" "+c.t+", cost "+c.c+((c.g&&c.g.length)?(" · "+c.g.join(", ")):"");
     a.innerHTML='<div class="imgwrap"><img loading="lazy" src="'+IMG+c.s+(state.upgraded?"-upgraded":"")+'.png" alt="'+c.n.replace(/"/g,"&quot;")+'"></div>'
       +'<div class="meta"><div class="name">'+c.n+(state.upgraded?"+":"")+'</div><div class="badges">'
@@ -1363,27 +1424,34 @@ function render(){
   grid.appendChild(frag);
 }
 
+function switchCharacter(ch){
+  if(state.character===ch) return;
+  state.character=ch;
+  state.type.clear(); state.rarity.clear(); state.cost.clear(); state.mech.clear();
+  state.search=""; document.getElementById("search").value="";
+  document.querySelectorAll("#chartabs .chartab").forEach(t=>t.classList.toggle("on", t.getAttribute("data-char")===ch));
+  buildFilterChips(); render();
+}
+(function(){ const box=document.getElementById("chartabs"); Object.keys(DATA).forEach(ch=>{ const el=document.createElement("button"); el.className="chartab"+(ch===state.character?" on":""); el.setAttribute("data-char",ch); el.textContent=DATA[ch].name; el.onclick=()=>switchCharacter(ch); box.appendChild(el); }); })();
+
+buildFilterChips();
+
 document.getElementById("search").addEventListener("input",e=>{state.search=e.target.value;render();});
 document.getElementById("sort").addEventListener("change",e=>{state.sort=e.target.value;render();});
 const dirBtn=document.getElementById("dir");
-dirBtn.addEventListener("click",()=>{ state.dir*=-1; dirBtn.textContent = state.dir===1?"↑":"↓"; render(); });
+dirBtn.addEventListener("click",()=>{ state.dir*=-1; dirBtn.textContent=state.dir===1?"↑":"↓"; render(); });
 document.getElementById("cols").addEventListener("change",e=>{ document.documentElement.style.setProperty("--cols",e.target.value); });
 const upgBtn=document.getElementById("upg");
 upgBtn.addEventListener("click",()=>{ state.upgraded=!state.upgraded; upgBtn.classList.toggle("on",state.upgraded); upgBtn.textContent=state.upgraded?"Showing Upgraded":"Show Upgraded"; render(); });
+const mechModeBtn=document.getElementById("mechmode");
+mechModeBtn.addEventListener("click",()=>{ state.mechMode=state.mechMode==="any"?"all":"any"; mechModeBtn.textContent="Match: "+state.mechMode.toUpperCase(); render(); });
 document.getElementById("reset").addEventListener("click",()=>{
-  state.search=""; state.sort="name"; state.dir=1;
-  state.type.clear(); state.rarity.clear(); state.cost.clear();
-  state.mech.clear(); state.mechMode="any";
-  document.getElementById("search").value="";
-  document.getElementById("sort").value="name";
-  dirBtn.textContent="↑";
-  mechModeBtn.textContent="Match: ANY";
-  state.upgraded=false; upgBtn.classList.remove("on"); upgBtn.textContent="Show Upgraded";
-  document.querySelectorAll(".chip.on").forEach(ch=>{ch.classList.remove("on");ch.style.background="";ch.style.borderColor="";});
-  render();
+  state.search=""; state.sort="name"; state.dir=1; state.type.clear(); state.rarity.clear(); state.cost.clear(); state.mech.clear(); state.mechMode="any"; state.upgraded=false;
+  document.getElementById("search").value=""; document.getElementById("sort").value="name";
+  dirBtn.textContent="↑"; mechModeBtn.textContent="Match: ANY"; upgBtn.textContent="Show Upgraded"; upgBtn.classList.remove("on");
+  buildFilterChips(); render();
 });
 
-document.getElementById("subcount").textContent=CARDS.length;
 render();
 </script>
 </body>
