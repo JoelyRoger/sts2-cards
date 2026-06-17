@@ -13,6 +13,7 @@ A fast, sortable, filterable browser for **Slay the Spire 2** cards. Covers all 
 - Filter by type, rarity, and cost
 - 20 **mechanic filters** (Poison, Shiv, Block, Draw, Discard, Sly, Combo, etc.) with an ANY/ALL match toggle for finding synergies
 - **Show Upgraded** toggle — swaps every card to its upgraded art
+- **Unlock filters** (Unlock 1/2/3) — flag cards behind each character's unlock milestones (Beat Act 1 / Kill 15 Elites / Beat Ascension 1); locked cards dim with a diagonal hash and a 🔒 badge
 - Works even without JavaScript (cards are pre-rendered), so it degrades gracefully
 
 ## How it's built

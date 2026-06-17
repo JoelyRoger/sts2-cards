@@ -17,7 +17,7 @@
   :root{
     --bg:#0a171e; --panel:#10242e; --panel2:#16323f; --line:#23404d;
     --text:#e9f2f3; --muted:#8fb0b9; --gold:#e8b54a; --gold2:#ffd884;
-    --cols:6; --mech:#5bd6c0; --mech-bg:#11313b; --upg:#5fcf6a;
+    --cols:6; --lock:#e8924a; --mech:#5bd6c0; --mech-bg:#11313b; --upg:#5fcf6a;
     --r-Basic:#b9c4c8; --r-Common:#e6edee; --r-Uncommon:#4aa3ff;
     --r-Rare:#ffd14a; --r-Event:#b07cff; --r-Ancient:#46d6b8;
     --t-Attack:#ef6a5e; --t-Skill:#56b4ec; --t-Power:#e6a32f;
@@ -118,6 +118,11 @@
   .chartab{border:1px solid var(--line);background:var(--panel);color:var(--muted);padding:7px 16px;border-radius:8px;font-size:14px;font-weight:800;cursor:pointer;letter-spacing:.3px}
   .chartab:hover{color:var(--text);border-color:var(--muted)}
   .chartab.on{background:var(--gold);border-color:var(--gold);color:#23180a}
+  .btn.lk.on{background:#3a2113;border-color:var(--lock);color:var(--lock)}
+  .card.locked .imgwrap img{opacity:.3;filter:grayscale(.55)}
+  .card.locked .imgwrap::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(45deg, rgba(0,0,0,0) 0 13px, rgba(0,0,0,.5) 13px 16px);pointer-events:none}
+  .card.locked .name{opacity:.5}
+  .lockbadge{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(8,16,22,.85);color:#fff;border:1px solid var(--lock);padding:4px 9px;border-radius:7px;font-size:11px;font-weight:800;white-space:nowrap;z-index:2}
 </style>
 </head>
 <body>
@@ -151,6 +156,12 @@
       <div class="group">
         <span class="lbl">Art</span>
         <button class="btn upg" id="upg" title="Swap card art to the upgraded (+) versions">Show Upgraded</button>
+      </div>
+      <div class="group">
+        <span class="lbl">Lock</span>
+        <button class="btn lk" id="lk1" title="These cards unlock when you Beat Act 1 with the character">Unlock 1</button>
+        <button class="btn lk" id="lk2" title="These cards unlock when you Kill 15 Elites with the character">Unlock 2</button>
+        <button class="btn lk" id="lk3" title="These cards unlock when you Beat Ascension 1 with the character">Unlock 3</button>
       </div>
       <span class="count" id="count">91 cards</span>
     </div>
@@ -1185,7 +1196,7 @@ const DETAIL = "https://sts2.untapped.gg/en/cards/";
 const DATA = {
   silent: { name:"Silent", mech:["Poison","Weak","Vulnerable","Reduce Strength","Block","Dexterity","Thorns","Intangible","Draw","Discard","Exhaust","Retain","Sly","Shiv","Innate","Hits All Enemies","Energy","Combo","Multi Hit","Next Turn"], cards:[
     {s:"abrasive",n:"Abrasive",t:"Power",c:"3",r:"Rare",g:["Dexterity","Thorns","Sly"]},
-    {s:"accelerant",n:"Accelerant",t:"Power",c:"1",r:"Rare",g:["Poison"]},
+    {s:"accelerant",n:"Accelerant",t:"Power",c:"1",r:"Rare",g:["Poison"],u:1},
     {s:"accuracy",n:"Accuracy",t:"Power",c:"1",r:"Uncommon",g:["Shiv"]},
     {s:"acrobatics",n:"Acrobatics",t:"Skill",c:"1",r:"Uncommon",g:["Draw","Discard"]},
     {s:"adrenaline",n:"Adrenaline",t:"Skill",c:"0",r:"Rare",g:["Draw","Exhaust","Energy"]},
@@ -1195,10 +1206,10 @@ const DATA = {
     {s:"backflip",n:"Backflip",t:"Skill",c:"1",r:"Common",g:["Block","Draw"]},
     {s:"backstab",n:"Backstab",t:"Attack",c:"0",r:"Uncommon",g:["Exhaust","Innate"]},
     {s:"blade-dance",n:"Blade Dance",t:"Skill",c:"1",r:"Common",g:["Exhaust","Shiv"]},
-    {s:"blade-of-ink",n:"Blade of Ink",t:"Skill",c:"1",r:"Rare",g:["Shiv"]},
+    {s:"blade-of-ink",n:"Blade of Ink",t:"Skill",c:"1",r:"Rare",g:["Shiv"],u:3},
     {s:"blur",n:"Blur",t:"Skill",c:"1",r:"Uncommon",g:["Block","Next Turn"]},
     {s:"bouncing-flask",n:"Bouncing Flask",t:"Skill",c:"2",r:"Uncommon",g:["Poison","Multi Hit"]},
-    {s:"bubble-bubble",n:"Bubble Bubble",t:"Skill",c:"1",r:"Uncommon",g:["Poison"]},
+    {s:"bubble-bubble",n:"Bubble Bubble",t:"Skill",c:"1",r:"Uncommon",g:["Poison"],u:1},
     {s:"bullet-time",n:"Bullet Time",t:"Skill",c:"3",r:"Rare",g:["Draw","Energy"]},
     {s:"burst",n:"Burst",t:"Skill",c:"1",r:"Rare",g:[]},
     {s:"calculated-gamble",n:"Calculated Gamble",t:"Skill",c:"0",r:"Uncommon",g:["Draw","Discard","Exhaust"]},
@@ -1226,15 +1237,15 @@ const DATA = {
     {s:"follow-through",n:"Follow Through",t:"Attack",c:"1",r:"Common",g:["Multi Hit"]},
     {s:"footwork",n:"Footwork",t:"Power",c:"1",r:"Uncommon",g:["Dexterity"]},
     {s:"grand-finale",n:"Grand Finale",t:"Attack",c:"0",r:"Rare",g:["Hits All Enemies"]},
-    {s:"hand-trick",n:"Hand Trick",t:"Skill",c:"1",r:"Uncommon",g:["Block","Sly"]},
+    {s:"hand-trick",n:"Hand Trick",t:"Skill",c:"1",r:"Uncommon",g:["Block","Sly"],u:2},
     {s:"haze",n:"Haze",t:"Skill",c:"3",r:"Uncommon",g:["Poison","Sly","Hits All Enemies"]},
-    {s:"hidden-daggers",n:"Hidden Daggers",t:"Skill",c:"0",r:"Uncommon",g:["Discard","Shiv"]},
+    {s:"hidden-daggers",n:"Hidden Daggers",t:"Skill",c:"0",r:"Uncommon",g:["Discard","Shiv"],u:3},
     {s:"infinite-blades",n:"Infinite Blades",t:"Power",c:"1",r:"Uncommon",g:["Shiv"]},
     {s:"knife-trap",n:"Knife Trap",t:"Skill",c:"2",r:"Rare",g:["Exhaust","Shiv"]},
     {s:"leading-strike",n:"Leading Strike",t:"Attack",c:"1",r:"Common",g:["Shiv"]},
     {s:"leg-sweep",n:"Leg Sweep",t:"Skill",c:"2",r:"Uncommon",g:["Weak","Block"]},
     {s:"malaise",n:"Malaise",t:"Skill",c:"X",r:"Rare",g:["Weak","Reduce Strength","Exhaust"]},
-    {s:"master-planner",n:"Master Planner",t:"Power",c:"2",r:"Rare",g:["Sly","Combo"]},
+    {s:"master-planner",n:"Master Planner",t:"Power",c:"2",r:"Rare",g:["Sly","Combo"],u:2},
     {s:"memento-mori",n:"Memento Mori",t:"Attack",c:"1",r:"Uncommon",g:["Discard"]},
     {s:"mirage",n:"Mirage",t:"Skill",c:"1",r:"Uncommon",g:["Poison","Block","Exhaust","Hits All Enemies"]},
     {s:"murder",n:"Murder",t:"Attack",c:"3",r:"Rare",g:["Draw"]},
@@ -1243,7 +1254,7 @@ const DATA = {
     {s:"noxious-fumes",n:"Noxious Fumes",t:"Power",c:"1",r:"Uncommon",g:["Poison","Hits All Enemies"]},
     {s:"outbreak",n:"Outbreak",t:"Power",c:"1",r:"Uncommon",g:["Poison","Hits All Enemies"]},
     {s:"outmaneuver",n:"Outmaneuver",t:"Skill",c:"1",r:"Event",g:["Energy","Next Turn"]},
-    {s:"phantom-blades",n:"Phantom Blades",t:"Power",c:"1",r:"Uncommon",g:["Retain","Shiv"]},
+    {s:"phantom-blades",n:"Phantom Blades",t:"Power",c:"1",r:"Uncommon",g:["Retain","Shiv"],u:3},
     {s:"piercing-wail",n:"Piercing Wail",t:"Skill",c:"1",r:"Common",g:["Reduce Strength","Exhaust","Hits All Enemies"]},
     {s:"pinpoint",n:"Pinpoint",t:"Attack",c:"3",r:"Uncommon",g:["Energy"]},
     {s:"poisoned-stab",n:"Poisoned Stab",t:"Attack",c:"1",r:"Common",g:["Poison"]},
@@ -1251,14 +1262,14 @@ const DATA = {
     {s:"precise-cut",n:"Precise Cut",t:"Attack",c:"0",r:"Uncommon",g:[]},
     {s:"predator",n:"Predator",t:"Attack",c:"2",r:"Uncommon",g:["Draw","Next Turn"]},
     {s:"prepared",n:"Prepared",t:"Skill",c:"0",r:"Common",g:["Draw","Discard"]},
-    {s:"reflex",n:"Reflex",t:"Skill",c:"3",r:"Uncommon",g:["Draw","Sly"]},
+    {s:"reflex",n:"Reflex",t:"Skill",c:"3",r:"Uncommon",g:["Draw","Sly"],u:2},
     {s:"ricochet",n:"Ricochet",t:"Attack",c:"2",r:"Common",g:["Sly","Multi Hit"]},
     {s:"serpent-form",n:"Serpent Form",t:"Power",c:"3",r:"Rare",g:["Combo"]},
     {s:"shadow-step",n:"Shadow Step",t:"Skill",c:"1",r:"Rare",g:["Discard","Next Turn"]},
     {s:"shadowmeld",n:"Shadowmeld",t:"Skill",c:"1",r:"Rare",g:["Block"]},
     {s:"skewer",n:"Skewer",t:"Attack",c:"X",r:"Uncommon",g:["Multi Hit"]},
     {s:"slice",n:"Slice",t:"Attack",c:"0",r:"Common",g:[]},
-    {s:"snakebite",n:"Snakebite",t:"Skill",c:"2",r:"Common",g:["Poison","Retain"]},
+    {s:"snakebite",n:"Snakebite",t:"Skill",c:"2",r:"Common",g:["Poison","Retain"],u:1},
     {s:"sneaky",n:"Sneaky",t:"Power",c:"2",r:"Rare",g:["Block","Sly"]},
     {s:"speedster",n:"Speedster",t:"Power",c:"2",r:"Uncommon",g:["Draw","Hits All Enemies"]},
     {s:"storm-of-steel",n:"Storm of Steel",t:"Skill",c:"1",r:"Rare",g:["Discard","Shiv"]},
@@ -1278,10 +1289,10 @@ const DATA = {
   ] },
   regent: { name:"Regent", mech:["Blade Build","Blade Offensive","Energy","Create","Colourless","Minions","Tempo","Draw-Pile","Block","Draw","Hits All Enemies","Exhaust","Next Turn","Weak","Vulnerable","Gain Strength","Reduce Strength","Multi Hit","Vigor","Ethereal"], cards:[
     {s:"alignment",n:"Alignment",t:"Skill",c:"0",r:"Uncommon",g:["Energy"]},
-    {s:"arsenal",n:"Arsenal",t:"Power",c:"1",r:"Rare",g:["Create","Gain Strength"]},
+    {s:"arsenal",n:"Arsenal",t:"Power",c:"1",r:"Rare",g:["Create","Gain Strength"],u:2},
     {s:"astral-pulse",n:"Astral Pulse",t:"Attack",c:"0",r:"Common",g:["Hits All Enemies"]},
     {s:"beat-into-shape",n:"Beat into Shape",t:"Attack",c:"1",r:"Rare",g:["Blade Build"]},
-    {s:"begone",n:"BEGONE!",t:"Skill",c:"1",r:"Common",g:["Create","Minions"]},
+    {s:"begone",n:"BEGONE!",t:"Skill",c:"1",r:"Common",g:["Create","Minions"],u:2},
     {s:"big-bang",n:"Big Bang",t:"Skill",c:"0",r:"Rare",g:["Blade Build","Energy","Draw","Exhaust"]},
     {s:"black-hole",n:"Black Hole",t:"Power",c:"1",r:"Uncommon",g:["Energy","Hits All Enemies"]},
     {s:"bombardment",n:"Bombardment",t:"Attack",c:"3",r:"Rare",g:["Exhaust"]},
@@ -1305,7 +1316,7 @@ const DATA = {
     {s:"dying-star",n:"Dying Star",t:"Attack",c:"1",r:"Rare",g:["Hits All Enemies","Reduce Strength","Ethereal"]},
     {s:"falling-star",n:"Falling Star",t:"Attack",c:"0",r:"Basic",g:["Weak","Vulnerable"]},
     {s:"foregone-conclusion",n:"Foregone Conclusion",t:"Skill",c:"1",r:"Rare",g:["Draw-Pile","Next Turn"]},
-    {s:"furnace",n:"Furnace",t:"Power",c:"1",r:"Uncommon",g:["Blade Build"]},
+    {s:"furnace",n:"Furnace",t:"Power",c:"1",r:"Uncommon",g:["Blade Build"],u:1},
     {s:"gamma-blast",n:"Gamma Blast",t:"Attack",c:"0",r:"Uncommon",g:["Weak","Vulnerable"]},
     {s:"gather-light",n:"Gather Light",t:"Skill",c:"1",r:"Common",g:["Energy","Block"]},
     {s:"genesis",n:"Genesis",t:"Power",c:"2",r:"Rare",g:["Energy"]},
@@ -1315,7 +1326,7 @@ const DATA = {
     {s:"guards",n:"GUARDS!!!",t:"Skill",c:"2",r:"Rare",g:["Create","Minions","Exhaust"]},
     {s:"guiding-star",n:"Guiding Star",t:"Attack",c:"1",r:"Common",g:["Draw"]},
     {s:"hammer-time",n:"Hammer Time",t:"Power",c:"2",r:"Rare",g:["Blade Build"]},
-    {s:"heavenly-drill",n:"Heavenly Drill",t:"Attack",c:"X",r:"Rare",g:["Multi Hit"]},
+    {s:"heavenly-drill",n:"Heavenly Drill",t:"Attack",c:"X",r:"Rare",g:["Multi Hit"],u:3},
     {s:"hegemony",n:"Hegemony",t:"Attack",c:"2",r:"Uncommon",g:["Energy","Next Turn"]},
     {s:"heirloom-hammer",n:"Heirloom Hammer",t:"Attack",c:"2",r:"Rare",g:["Colourless"]},
     {s:"hidden-cache",n:"Hidden Cache",t:"Skill",c:"1",r:"Common",g:["Energy","Next Turn"]},
@@ -1325,7 +1336,7 @@ const DATA = {
     {s:"knockout-blow",n:"Knockout Blow",t:"Attack",c:"3",r:"Uncommon",g:["Energy"]},
     {s:"know-thy-place",n:"Know Thy Place",t:"Skill",c:"0",r:"Common",g:["Exhaust","Weak","Vulnerable"]},
     {s:"largesse",n:"Largesse",t:"Skill",c:"0",r:"Uncommon",g:["Colourless"]},
-    {s:"lunar-blast",n:"Lunar Blast",t:"Attack",c:"0",r:"Uncommon",g:["Tempo"]},
+    {s:"lunar-blast",n:"Lunar Blast",t:"Attack",c:"0",r:"Uncommon",g:["Tempo"],u:3},
     {s:"make-it-so",n:"Make It So",t:"Attack",c:"0",r:"Rare",g:["Tempo"]},
     {s:"manifest-authority",n:"Manifest Authority",t:"Skill",c:"1",r:"Uncommon",g:["Colourless","Block"]},
     {s:"meteor-shower",n:"Meteor Shower",t:"Attack",c:"0",r:"Ancient",g:["Hits All Enemies","Weak","Vulnerable"]},
@@ -1336,7 +1347,7 @@ const DATA = {
     {s:"pale-blue-dot",n:"Pale Blue Dot",t:"Power",c:"1",r:"Uncommon",g:["Tempo","Draw","Next Turn"]},
     {s:"parry",n:"Parry",t:"Power",c:"1",r:"Uncommon",g:["Blade Offensive","Block"]},
     {s:"particle-wall",n:"Particle Wall",t:"Skill",c:"0",r:"Uncommon",g:["Block"]},
-    {s:"patter",n:"Patter",t:"Skill",c:"1",r:"Common",g:["Block","Vigor"]},
+    {s:"patter",n:"Patter",t:"Skill",c:"1",r:"Common",g:["Block","Vigor"],u:3},
     {s:"photon-cut",n:"Photon Cut",t:"Attack",c:"1",r:"Common",g:["Draw-Pile","Draw"]},
     {s:"pillar-of-creation",n:"Pillar of Creation",t:"Power",c:"1",r:"Uncommon",g:["Create","Block"]},
     {s:"prophesize",n:"Prophesize",t:"Skill",c:"2",r:"Uncommon",g:["Draw"]},
@@ -1352,12 +1363,12 @@ const DATA = {
     {s:"shining-strike",n:"Shining Strike",t:"Attack",c:"1",r:"Uncommon",g:["Energy","Draw-Pile"]},
     {s:"solar-strike",n:"Solar Strike",t:"Attack",c:"1",r:"Common",g:["Energy"]},
     {s:"spectrum-shift",n:"Spectrum Shift",t:"Power",c:"2",r:"Uncommon",g:["Colourless"]},
-    {s:"spoils-of-battle",n:"Spoils of Battle",t:"Skill",c:"1",r:"Common",g:["Blade Build","Draw"]},
+    {s:"spoils-of-battle",n:"Spoils of Battle",t:"Skill",c:"1",r:"Common",g:["Blade Build","Draw"],u:1},
     {s:"stardust",n:"Stardust",t:"Attack",c:"X",r:"Uncommon",g:["Multi Hit"]},
     {s:"strike-regent",n:"Strike",t:"Attack",c:"1",r:"Basic",g:[]},
     {s:"summon-forth",n:"Summon Forth",t:"Skill",c:"1",r:"Uncommon",g:["Blade Build","Blade Offensive"]},
-    {s:"supermassive",n:"Supermassive",t:"Attack",c:"1",r:"Uncommon",g:["Create"]},
-    {s:"sword-sage",n:"Sword Sage",t:"Power",c:"2",r:"Rare",g:["Blade Offensive"]},
+    {s:"supermassive",n:"Supermassive",t:"Attack",c:"1",r:"Uncommon",g:["Create"],u:2},
+    {s:"sword-sage",n:"Sword Sage",t:"Power",c:"2",r:"Rare",g:["Blade Offensive"],u:1},
     {s:"terraforming",n:"Terraforming",t:"Skill",c:"1",r:"Uncommon",g:["Vigor"]},
     {s:"the-sealed-throne",n:"The Sealed Throne",t:"Power",c:"1",r:"Ancient",g:["Energy","Tempo"]},
     {s:"the-smith",n:"The Smith",t:"Skill",c:"1",r:"Rare",g:["Blade Build"]},
@@ -1374,7 +1385,7 @@ const DATA = {
     {s:"barricade",n:"Barricade",t:"Power",c:"3",r:"Rare",g:["Block"]},
     {s:"bash",n:"Bash",t:"Attack",c:"2",r:"Basic",g:["Vulnerable"]},
     {s:"battle-trance",n:"Battle Trance",t:"Skill",c:"0",r:"Uncommon",g:["Draw"]},
-    {s:"blood-wall",n:"Blood Wall",t:"Skill",c:"2",r:"Common",g:["Lose HP","Block"]},
+    {s:"blood-wall",n:"Blood Wall",t:"Skill",c:"2",r:"Common",g:["Lose HP","Block"],u:3},
     {s:"bloodletting",n:"Bloodletting",t:"Skill",c:"0",r:"Common",g:["Lose HP","Energy"]},
     {s:"bludgeon",n:"Bludgeon",t:"Attack",c:"3",r:"Uncommon",g:[]},
     {s:"body-slam",n:"Body Slam",t:"Attack",c:"1",r:"Common",g:["Block"]},
@@ -1384,20 +1395,20 @@ const DATA = {
     {s:"bully",n:"Bully",t:"Attack",c:"0",r:"Uncommon",g:["Vulnerable"]},
     {s:"burning-pact",n:"Burning Pact",t:"Skill",c:"1",r:"Uncommon",g:["Exhaust","Draw"]},
     {s:"cascade",n:"Cascade",t:"Skill",c:"X",r:"Rare",g:[]},
-    {s:"cinder",n:"Cinder",t:"Attack",c:"2",r:"Common",g:["Exhaust"]},
+    {s:"cinder",n:"Cinder",t:"Attack",c:"2",r:"Common",g:["Exhaust"],u:2},
     {s:"clash",n:"Clash",t:"Attack",c:"0",r:"Event",g:["Attacks Matter"]},
     {s:"colossus",n:"Colossus",t:"Skill",c:"1",r:"Uncommon",g:["Block","Vulnerable"]},
     {s:"conflagration",n:"Conflagration",t:"Attack",c:"1",r:"Rare",g:["Attacks Matter","Hits All Enemies"]},
     {s:"corruption",n:"Corruption",t:"Power",c:"3",r:"Ancient",g:["Exhaust","Energy"]},
     {s:"crimson-mantle",n:"Crimson Mantle",t:"Power",c:"1",r:"Rare",g:["Lose HP","Block"]},
-    {s:"cruelty",n:"Cruelty",t:"Power",c:"1",r:"Rare",g:["Vulnerable"]},
+    {s:"cruelty",n:"Cruelty",t:"Power",c:"1",r:"Rare",g:["Vulnerable"],u:1},
     {s:"dark-embrace",n:"Dark Embrace",t:"Power",c:"2",r:"Rare",g:["Exhaust","Draw"]},
     {s:"defend-ironclad",n:"Defend",t:"Skill",c:"1",r:"Basic",g:["Block"]},
     {s:"demon-form",n:"Demon Form",t:"Power",c:"3",r:"Rare",g:["Strength"]},
     {s:"demonic-shield",n:"Demonic Shield",t:"Skill",c:"0",r:"Uncommon",g:["Exhaust","Lose HP","Block"]},
     {s:"dismantle",n:"Dismantle",t:"Attack",c:"1",r:"Uncommon",g:["Vulnerable","Multi Hit"]},
-    {s:"dominate",n:"Dominate",t:"Skill",c:"1",r:"Uncommon",g:["Exhaust","Strength","Vulnerable"]},
-    {s:"drum-of-battle",n:"Drum of Battle",t:"Power",c:"0",r:"Uncommon",g:["Exhaust","Draw"]},
+    {s:"dominate",n:"Dominate",t:"Skill",c:"1",r:"Uncommon",g:["Exhaust","Strength","Vulnerable"],u:1},
+    {s:"drum-of-battle",n:"Drum of Battle",t:"Power",c:"0",r:"Uncommon",g:["Exhaust","Draw"],u:2},
     {s:"dual-wield",n:"Dual Wield",t:"Skill",c:"1",r:"Event",g:["Attacks Matter","Create"]},
     {s:"entrench",n:"Entrench",t:"Skill",c:"2",r:"Event",g:["Block"]},
     {s:"evil-eye",n:"Evil Eye",t:"Skill",c:"1",r:"Uncommon",g:["Exhaust","Block"]},
@@ -1415,17 +1426,17 @@ const DATA = {
     {s:"howl-from-beyond",n:"Howl from Beyond",t:"Attack",c:"3",r:"Uncommon",g:["Exhaust","Hits All Enemies"]},
     {s:"impervious",n:"Impervious",t:"Skill",c:"2",r:"Rare",g:["Exhaust","Block"]},
     {s:"infernal-blade",n:"Infernal Blade",t:"Skill",c:"1",r:"Uncommon",g:["Exhaust","Attacks Matter","Energy","Create"]},
-    {s:"inferno",n:"Inferno",t:"Power",c:"1",r:"Uncommon",g:["Lose HP","Hits All Enemies"]},
+    {s:"inferno",n:"Inferno",t:"Power",c:"1",r:"Uncommon",g:["Lose HP","Hits All Enemies"],u:3},
     {s:"inflame",n:"Inflame",t:"Power",c:"1",r:"Uncommon",g:["Strength"]},
     {s:"iron-wave",n:"Iron Wave",t:"Attack",c:"1",r:"Common",g:["Block"]},
     {s:"juggernaut",n:"Juggernaut",t:"Power",c:"2",r:"Rare",g:["Block"]},
     {s:"juggling",n:"Juggling",t:"Power",c:"1",r:"Uncommon",g:["Attacks Matter","Create"]},
     {s:"mangle",n:"Mangle",t:"Attack",c:"3",r:"Rare",g:[]},
-    {s:"molten-fist",n:"Molten Fist",t:"Attack",c:"1",r:"Common",g:["Exhaust","Vulnerable"]},
+    {s:"molten-fist",n:"Molten Fist",t:"Attack",c:"1",r:"Common",g:["Exhaust","Vulnerable"],u:1},
     {s:"not-yet",n:"Not Yet",t:"Skill",c:"2",r:"Rare",g:["Exhaust"]},
     {s:"offering",n:"Offering",t:"Skill",c:"0",r:"Rare",g:["Exhaust","Lose HP","Energy","Draw"]},
     {s:"one-two-punch",n:"One-Two Punch",t:"Skill",c:"1",r:"Rare",g:["Attacks Matter"]},
-    {s:"pacts-end",n:"Pact's End",t:"Attack",c:"0",r:"Rare",g:["Exhaust","Hits All Enemies"]},
+    {s:"pacts-end",n:"Pact's End",t:"Attack",c:"0",r:"Rare",g:["Exhaust","Hits All Enemies"],u:2},
     {s:"perfected-strike",n:"Perfected Strike",t:"Attack",c:"2",r:"Common",g:["Strike"]},
     {s:"pillage",n:"Pillage",t:"Attack",c:"1",r:"Uncommon",g:["Attacks Matter","Draw"]},
     {s:"pommel-strike",n:"Pommel Strike",t:"Attack",c:"1",r:"Common",g:["Strike","Draw"]},
@@ -1446,7 +1457,7 @@ const DATA = {
     {s:"sword-boomerang",n:"Sword Boomerang",t:"Attack",c:"1",r:"Common",g:["Multi Hit"]},
     {s:"tank",n:"Tank",t:"Power",c:"1",r:"Rare",g:[]},
     {s:"taunt",n:"Taunt",t:"Skill",c:"1",r:"Uncommon",g:["Block","Vulnerable"]},
-    {s:"tear-asunder",n:"Tear Asunder",t:"Attack",c:"2",r:"Rare",g:["Lose HP","Multi Hit"]},
+    {s:"tear-asunder",n:"Tear Asunder",t:"Attack",c:"2",r:"Rare",g:["Lose HP","Multi Hit"],u:3},
     {s:"thrash",n:"Thrash",t:"Attack",c:"1",r:"Rare",g:["Exhaust","Attacks Matter","Multi Hit"]},
     {s:"thunderclap",n:"Thunderclap",t:"Attack",c:"1",r:"Common",g:["Vulnerable","Hits All Enemies"]},
     {s:"tremble",n:"Tremble",t:"Skill",c:"1",r:"Common",g:["Exhaust","Vulnerable"]},
@@ -1462,7 +1473,7 @@ const DATA = {
     {s:"adaptive-strike",n:"Adaptive Strike",t:"Attack",c:"2",r:"Rare",g:[]},
     {s:"all-for-one",n:"All for One",t:"Attack",c:"2",r:"Rare",g:[]},
     {s:"ball-lightning",n:"Ball Lightning",t:"Attack",c:"1",r:"Common",g:["Channel","Lightning"]},
-    {s:"barrage",n:"Barrage",t:"Attack",c:"1",r:"Common",g:["Channel"]},
+    {s:"barrage",n:"Barrage",t:"Attack",c:"1",r:"Common",g:["Channel"],u:2},
     {s:"beam-cell",n:"Beam Cell",t:"Attack",c:"0",r:"Common",g:[]},
     {s:"biased-cognition",n:"Biased Cognition",t:"Power",c:"1",r:"Ancient",g:["Focus"]},
     {s:"boost-away",n:"Boost Away",t:"Skill",c:"0",r:"Common",g:["Block"]},
@@ -1477,7 +1488,7 @@ const DATA = {
     {s:"cold-snap",n:"Cold Snap",t:"Attack",c:"1",r:"Common",g:["Channel","Frost"]},
     {s:"compact",n:"Compact",t:"Skill",c:"1",r:"Uncommon",g:["Status","Block"]},
     {s:"compile-driver",n:"Compile Driver",t:"Attack",c:"1",r:"Common",g:["Draw"]},
-    {s:"consuming-shadow",n:"Consuming Shadow",t:"Power",c:"2",r:"Rare",g:["Channel","Evoke","Dark"]},
+    {s:"consuming-shadow",n:"Consuming Shadow",t:"Power",c:"2",r:"Rare",g:["Channel","Evoke","Dark"],u:1},
     {s:"coolant",n:"Coolant",t:"Power",c:"1",r:"Rare",g:["Block"]},
     {s:"coolheaded",n:"Coolheaded",t:"Skill",c:"1",r:"Common",g:["Channel","Frost","Draw"]},
     {s:"creative-ai",n:"Creative AI",t:"Power",c:"3",r:"Rare",g:["Powers"]},
@@ -1490,7 +1501,7 @@ const DATA = {
     {s:"energy-surge",n:"Energy Surge",t:"Skill",c:"1",r:"Uncommon",g:["Energy","Exhaust"]},
     {s:"feral",n:"Feral",t:"Power",c:"2",r:"Uncommon",g:[]},
     {s:"fight-through",n:"Fight Through",t:"Skill",c:"1",r:"Uncommon",g:["Block"]},
-    {s:"flak-cannon",n:"Flak Cannon",t:"Attack",c:"2",r:"Rare",g:["Status","Exhaust"]},
+    {s:"flak-cannon",n:"Flak Cannon",t:"Attack",c:"2",r:"Rare",g:["Status","Exhaust"],u:2},
     {s:"focused-strike",n:"Focused Strike",t:"Attack",c:"1",r:"Common",g:["Focus"]},
     {s:"ftl",n:"FTL",t:"Attack",c:"0",r:"Uncommon",g:["Draw"]},
     {s:"fusion",n:"Fusion",t:"Skill",c:"2",r:"Uncommon",g:["Channel"]},
@@ -1500,7 +1511,7 @@ const DATA = {
     {s:"go-for-the-eyes",n:"Go for the Eyes",t:"Attack",c:"0",r:"Common",g:[]},
     {s:"gunk-up",n:"Gunk Up",t:"Attack",c:"1",r:"Common",g:["Multi Hit"]},
     {s:"hailstorm",n:"Hailstorm",t:"Power",c:"1",r:"Uncommon",g:["Frost","Hits All Enemies"]},
-    {s:"helix-drill",n:"Helix Drill",t:"Attack",c:"0",r:"Rare",g:["Energy"]},
+    {s:"helix-drill",n:"Helix Drill",t:"Attack",c:"0",r:"Rare",g:["Energy"],u:3},
     {s:"hello-world",n:"Hello World",t:"Power",c:"1",r:"Event",g:[]},
     {s:"hologram",n:"Hologram",t:"Skill",c:"1",r:"Common",g:["Block","Exhaust"]},
     {s:"hotfix",n:"Hotfix",t:"Skill",c:"0",r:"Common",g:["Focus","Exhaust"]},
@@ -1510,13 +1521,13 @@ const DATA = {
     {s:"iteration",n:"Iteration",t:"Power",c:"1",r:"Uncommon",g:["Status","Draw"]},
     {s:"leap",n:"Leap",t:"Skill",c:"1",r:"Common",g:["Block"]},
     {s:"lightning-rod",n:"Lightning Rod",t:"Skill",c:"1",r:"Common",g:["Channel","Lightning","Block"]},
-    {s:"loop",n:"Loop",t:"Power",c:"1",r:"Uncommon",g:[]},
+    {s:"loop",n:"Loop",t:"Power",c:"1",r:"Uncommon",g:[],u:1},
     {s:"machine-learning",n:"Machine Learning",t:"Power",c:"1",r:"Rare",g:["Draw"]},
     {s:"meteor-strike",n:"Meteor Strike",t:"Attack",c:"5",r:"Rare",g:["Channel"]},
     {s:"modded",n:"Modded",t:"Skill",c:"0",r:"Rare",g:["Draw"]},
     {s:"momentum-strike",n:"Momentum Strike",t:"Attack",c:"1",r:"Common",g:[]},
     {s:"multi-cast",n:"Multi-Cast",t:"Skill",c:"X",r:"Rare",g:["Evoke"]},
-    {s:"null",n:"Null",t:"Attack",c:"2",r:"Uncommon",g:["Channel","Dark"]},
+    {s:"null",n:"Null",t:"Attack",c:"2",r:"Uncommon",g:["Channel","Dark"],u:1},
     {s:"overclock",n:"Overclock",t:"Skill",c:"0",r:"Uncommon",g:["Draw"]},
     {s:"quadcast",n:"Quadcast",t:"Skill",c:"1",r:"Ancient",g:["Evoke"]},
     {s:"rainbow",n:"Rainbow",t:"Skill",c:"2",r:"Rare",g:["Channel","Lightning","Frost","Dark","Exhaust"]},
@@ -1525,13 +1536,13 @@ const DATA = {
     {s:"refract",n:"Refract",t:"Attack",c:"3",r:"Uncommon",g:["Channel","Multi Hit"]},
     {s:"rip-and-tear",n:"Rip and Tear",t:"Attack",c:"1",r:"Event",g:["Multi Hit"]},
     {s:"rocket-punch",n:"Rocket Punch",t:"Attack",c:"2",r:"Uncommon",g:["Status","Draw"]},
-    {s:"scavenge",n:"Scavenge",t:"Skill",c:"1",r:"Uncommon",g:["Energy","Exhaust"]},
+    {s:"scavenge",n:"Scavenge",t:"Skill",c:"1",r:"Uncommon",g:["Energy","Exhaust"],u:3},
     {s:"scrape",n:"Scrape",t:"Attack",c:"1",r:"Uncommon",g:["Draw"]},
     {s:"shadow-shield",n:"Shadow Shield",t:"Skill",c:"2",r:"Uncommon",g:["Channel","Dark","Block"]},
     {s:"shatter",n:"Shatter",t:"Attack",c:"1",r:"Rare",g:["Evoke","Hits All Enemies"]},
     {s:"signal-boost",n:"Signal Boost",t:"Skill",c:"1",r:"Rare",g:["Powers","Exhaust"]},
     {s:"skim",n:"Skim",t:"Skill",c:"1",r:"Uncommon",g:["Draw"]},
-    {s:"smokestack",n:"Smokestack",t:"Power",c:"1",r:"Uncommon",g:["Status","Hits All Enemies"]},
+    {s:"smokestack",n:"Smokestack",t:"Power",c:"1",r:"Uncommon",g:["Status","Hits All Enemies"],u:2},
     {s:"spinner",n:"Spinner",t:"Power",c:"1",r:"Rare",g:["Channel"]},
     {s:"stack",n:"Stack",t:"Skill",c:"1",r:"Event",g:["Block"]},
     {s:"storm",n:"Storm",t:"Power",c:"1",r:"Uncommon",g:["Channel","Lightning","Powers"]},
@@ -1546,25 +1557,25 @@ const DATA = {
     {s:"tesla-coil",n:"Tesla Coil",t:"Attack",c:"0",r:"Uncommon",g:["Lightning"]},
     {s:"thunder",n:"Thunder",t:"Power",c:"1",r:"Uncommon",g:["Evoke","Lightning"]},
     {s:"trash-to-treasure",n:"Trash to Treasure",t:"Power",c:"1",r:"Rare",g:["Channel","Status"]},
-    {s:"turbo",n:"TURBO",t:"Skill",c:"0",r:"Common",g:["Energy"]},
+    {s:"turbo",n:"TURBO",t:"Skill",c:"0",r:"Common",g:["Energy"],u:3},
     {s:"uproar",n:"Uproar",t:"Attack",c:"2",r:"Common",g:["Multi Hit"]},
     {s:"voltaic",n:"Voltaic",t:"Skill",c:"3",r:"Rare",g:["Channel","Lightning","Exhaust"]},
     {s:"white-noise",n:"White Noise",t:"Skill",c:"1",r:"Uncommon",g:["Powers","Energy","Exhaust"]},
     {s:"zap",n:"Zap",t:"Skill",c:"1",r:"Basic",g:["Channel","Lightning"]}
   ] },
   necrobinder: { name:"Necrobinder", mech:["Osty","Summon","Doom","Ethereal","Soul","Energy","Block","Draw","Hits All Enemies","Exhaust","Retain","Weak","Vulnerable","Discard Pile"], cards:[
-    {s:"afterlife",n:"Afterlife",t:"Skill",c:"1",r:"Common",g:["Summon","Exhaust"]},
-    {s:"banshees-cry",n:"Banshee's Cry",t:"Attack",c:"9",r:"Rare",g:["Ethereal","Hits All Enemies"]},
+    {s:"afterlife",n:"Afterlife",t:"Skill",c:"1",r:"Common",g:["Summon","Exhaust"],u:2},
+    {s:"banshees-cry",n:"Banshee's Cry",t:"Attack",c:"9",r:"Rare",g:["Ethereal","Hits All Enemies"],u:3},
     {s:"blight-strike",n:"Blight Strike",t:"Attack",c:"1",r:"Common",g:["Doom"]},
     {s:"bodyguard",n:"Bodyguard",t:"Skill",c:"1",r:"Basic",g:["Summon"]},
     {s:"bone-shards",n:"Bone Shards",t:"Attack",c:"1",r:"Uncommon",g:["Osty","Block","Hits All Enemies"]},
     {s:"borrowed-time",n:"Borrowed Time",t:"Skill",c:"1",r:"Uncommon",g:["Energy"]},
     {s:"bury",n:"Bury",t:"Attack",c:"4",r:"Uncommon",g:[]},
-    {s:"calcify",n:"Calcify",t:"Power",c:"1",r:"Uncommon",g:["Osty"]},
+    {s:"calcify",n:"Calcify",t:"Power",c:"1",r:"Uncommon",g:["Osty"],u:2},
     {s:"call-of-the-void",n:"Call of the Void",t:"Power",c:"1",r:"Rare",g:["Ethereal"]},
     {s:"capture-spirit",n:"Capture Spirit",t:"Skill",c:"1",r:"Uncommon",g:["Soul"]},
     {s:"cleanse",n:"Cleanse",t:"Skill",c:"1",r:"Uncommon",g:["Summon","Exhaust"]},
-    {s:"countdown",n:"Countdown",t:"Power",c:"1",r:"Uncommon",g:["Doom"]},
+    {s:"countdown",n:"Countdown",t:"Power",c:"1",r:"Uncommon",g:["Doom"],u:1},
     {s:"danse-macabre",n:"Danse Macabre",t:"Power",c:"1",r:"Uncommon",g:["Block"]},
     {s:"death-march",n:"Death March",t:"Attack",c:"1",r:"Uncommon",g:["Draw"]},
     {s:"deaths-door",n:"Death's Door",t:"Skill",c:"1",r:"Uncommon",g:["Doom","Block"]},
@@ -1603,7 +1614,7 @@ const DATA = {
     {s:"negative-pulse",n:"Negative Pulse",t:"Skill",c:"1",r:"Common",g:["Doom","Block","Hits All Enemies"]},
     {s:"neurosurge",n:"Neurosurge",t:"Power",c:"0",r:"Rare",g:["Doom","Energy","Draw"]},
     {s:"no-escape",n:"No Escape",t:"Skill",c:"1",r:"Uncommon",g:["Doom"]},
-    {s:"oblivion",n:"Oblivion",t:"Skill",c:"0",r:"Rare",g:["Doom"]},
+    {s:"oblivion",n:"Oblivion",t:"Skill",c:"0",r:"Rare",g:["Doom"],u:1},
     {s:"pagestorm",n:"Pagestorm",t:"Power",c:"1",r:"Uncommon",g:["Ethereal","Draw"]},
     {s:"parse",n:"Parse",t:"Skill",c:"1",r:"Uncommon",g:["Ethereal","Draw"]},
     {s:"poke",n:"Poke",t:"Attack",c:"0",r:"Common",g:["Osty"]},
@@ -1617,9 +1628,9 @@ const DATA = {
     {s:"reaper-form",n:"Reaper Form",t:"Power",c:"3",r:"Rare",g:["Doom"]},
     {s:"reave",n:"Reave",t:"Attack",c:"1",r:"Common",g:["Soul"]},
     {s:"right-hand-hand",n:"Right Hand Hand",t:"Attack",c:"0",r:"Uncommon",g:["Osty","Discard Pile"]},
-    {s:"sacrifice",n:"Sacrifice",t:"Skill",c:"1",r:"Rare",g:["Osty","Block","Retain"]},
-    {s:"scourge",n:"Scourge",t:"Skill",c:"1",r:"Common",g:["Doom","Draw"]},
-    {s:"sculpting-strike",n:"Sculpting Strike",t:"Attack",c:"1",r:"Common",g:["Ethereal"]},
+    {s:"sacrifice",n:"Sacrifice",t:"Skill",c:"1",r:"Rare",g:["Osty","Block","Retain"],u:2},
+    {s:"scourge",n:"Scourge",t:"Skill",c:"1",r:"Common",g:["Doom","Draw"],u:1},
+    {s:"sculpting-strike",n:"Sculpting Strike",t:"Attack",c:"1",r:"Common",g:["Ethereal"],u:3},
     {s:"seance",n:"Seance",t:"Skill",c:"1",r:"Rare",g:["Ethereal","Soul"]},
     {s:"sentry-mode",n:"Sentry Mode",t:"Power",c:"2",r:"Rare",g:[]},
     {s:"severance",n:"Severance",t:"Attack",c:"2",r:"Uncommon",g:["Soul","Discard Pile"]},
@@ -1639,16 +1650,17 @@ const DATA = {
     {s:"transfigure",n:"Transfigure",t:"Skill",c:"1",r:"Rare",g:["Exhaust"]},
     {s:"undeath",n:"Undeath",t:"Skill",c:"0",r:"Rare",g:["Block","Discard Pile"]},
     {s:"unleash",n:"Unleash",t:"Attack",c:"1",r:"Basic",g:["Osty"]},
-    {s:"veilpiercer",n:"Veilpiercer",t:"Attack",c:"1",r:"Uncommon",g:["Ethereal"]},
+    {s:"veilpiercer",n:"Veilpiercer",t:"Attack",c:"1",r:"Uncommon",g:["Ethereal"],u:3},
     {s:"wisp",n:"Wisp",t:"Skill",c:"0",r:"Common",g:["Energy","Exhaust"]}
   ] }
 };
 
+const LOCK_COND = {1:"Beat Act 1",2:"Kill 15 Elites",3:"Beat Ascension 1"};
 const RARITY_ORDER = {Basic:0,Common:1,Uncommon:2,Rare:3,Event:4,Ancient:5};
 const TYPE_ORDER = {Attack:0,Skill:1,Power:2};
 const costVal = c => c==="X" ? 999 : parseInt(c,10);
 
-const state = { character:"silent", search:"", sort:"name", dir:1, cols:6, type:new Set(), rarity:new Set(), cost:new Set(), mech:new Set(), mechMode:"any", upgraded:false };
+const state = { character:"silent", search:"", sort:"name", dir:1, cols:6, type:new Set(), rarity:new Set(), cost:new Set(), mech:new Set(), mechMode:"any", upgraded:false, lock:{1:false,2:false,3:false} };
 function curCards(){ return DATA[state.character].cards; }
 
 function uniqSorted(cards, key, order){ const vals=[...new Set(cards.map(c=>c[key]))]; return order ? vals.sort((a,b)=>order[a]-order[b]) : vals.sort((a,b)=>costVal(a)-costVal(b)); }
@@ -1687,9 +1699,10 @@ function render(){
   const frag=document.createDocumentFragment();
   for(const c of list){
     const a=document.createElement("a");
-    a.className="card"; a.href=DETAIL+c.s; a.target="_blank"; a.rel="noopener";
+    const locked = c.u && state.lock[c.u];
+    a.className="card"+(locked?" locked":""); a.href=DETAIL+c.s; a.target="_blank"; a.rel="noopener";
     a.title=c.n+" — "+c.r+" "+c.t+", cost "+c.c+((c.g&&c.g.length)?(" · "+c.g.join(", ")):"");
-    a.innerHTML='<div class="imgwrap"><img loading="lazy" src="'+IMG+c.s+(state.upgraded?"-upgraded":"")+'.png" alt="'+c.n.replace(/"/g,"&quot;")+'"></div>'
+    a.innerHTML='<div class="imgwrap"><img loading="lazy" src="'+IMG+c.s+(state.upgraded?"-upgraded":"")+'.png" alt="'+c.n.replace(/"/g,"&quot;")+'">'+(locked?'<div class="lockbadge">🔒 '+LOCK_COND[c.u]+'</div>':'')+'</div>'
       +'<div class="meta"><div class="name">'+c.n+(state.upgraded?"+":"")+'</div><div class="badges">'
       +'<span class="b cost">'+(c.c==="X"?"X":c.c)+' Energy</span>'
       +'<span class="b type" style="background:var(--t-'+c.t+')">'+c.t+'</span>'
@@ -1719,12 +1732,14 @@ dirBtn.addEventListener("click",()=>{ state.dir*=-1; dirBtn.textContent=state.di
 document.getElementById("cols").addEventListener("change",e=>{ document.documentElement.style.setProperty("--cols",e.target.value); });
 const upgBtn=document.getElementById("upg");
 upgBtn.addEventListener("click",()=>{ state.upgraded=!state.upgraded; upgBtn.classList.toggle("on",state.upgraded); upgBtn.textContent=state.upgraded?"Showing Upgraded":"Show Upgraded"; render(); });
+[1,2,3].forEach(n=>{ const b=document.getElementById("lk"+n); b.addEventListener("click",()=>{ state.lock[n]=!state.lock[n]; b.classList.toggle("on",state.lock[n]); render(); }); });
 const mechModeBtn=document.getElementById("mechmode");
 mechModeBtn.addEventListener("click",()=>{ state.mechMode=state.mechMode==="any"?"all":"any"; mechModeBtn.textContent="Match: "+state.mechMode.toUpperCase(); render(); });
 document.getElementById("reset").addEventListener("click",()=>{
   state.search=""; state.sort="name"; state.dir=1; state.type.clear(); state.rarity.clear(); state.cost.clear(); state.mech.clear(); state.mechMode="any"; state.upgraded=false;
   document.getElementById("search").value=""; document.getElementById("sort").value="name";
   dirBtn.textContent="↑"; mechModeBtn.textContent="Match: ANY"; upgBtn.textContent="Show Upgraded"; upgBtn.classList.remove("on");
+  state.lock={1:false,2:false,3:false}; document.querySelectorAll(".btn.lk").forEach(b=>b.classList.remove("on"));
   buildFilterChips(); render();
 });
 
